@@ -7,6 +7,10 @@ cd api
 # Hot reload
 dotnet watch run
 
+# Criação da pasta Models
+mkdir Models
+
+# Criação dos arquivos de model
 
 https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver16&tabs=cli&pivots=cs1-bash
 
