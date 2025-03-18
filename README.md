@@ -21,6 +21,10 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.0
 dotnet add package Microsoft.EntityFrameworkCore.Tools --version 8.0.0
 dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0.0
 
+# Instalar dependências de MVC
+dotnet add package Newtonsoft.Json --version 13.0.3
+dotnet add package Microsoft.AspNetCore.Mvc.NewtonsoftJson --version 8.0.0
+
 # Cria o arquivo de manifesto
 dotnet new tool-manifest
 
@@ -52,3 +56,6 @@ find / -name sqlcmd 2>/dev/null
 /opt/mssql-tools18/bin/sqlcmd -S 'localhost,1433' -U sa -P 'das@3212ASD5d465as4da65' -Q "SELECT name FROM sys.databases;" -C
 
 /opt/mssql-tools18/bin/sqlcmd -S 'localhost,1433' -U sa -P 'das@3212ASD5d465as4da65' -Q "CREATE DATABASE finshark;" -C
+
+# Passo a passo
+Cria model > Registra no DbContext > Cria Dto > Cria Map > Cria InterfaceRepo > Cria Repo > Adicionar no Program.cs > Cria Controller
