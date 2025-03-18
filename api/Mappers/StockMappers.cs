@@ -24,6 +24,7 @@ namespace api.Mappers
             };
         }
 
+        // caso não mande uma chave, não está travando
         public static Stock ToStockFromCreateDto(this CreateStockRequestDto stockDto)
         {
             return new Stock
