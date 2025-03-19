@@ -17,17 +17,19 @@ namespace api.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            List<IdentityRole> roles =
-            [
-                new IdentityRole{
+            var roles = new List<IdentityRole>
+            {
+                new IdentityRole
+                {
                     Name = "Admin",
                     NormalizedName = "ADMIN",
                 },
-                new IdentityRole{
+                new IdentityRole
+                {
                     Name = "Common",
                     NormalizedName = "COMMON",
                 }
-            ];
+            };
             builder.Entity<IdentityRole>().HasData(roles);
         }
     }
