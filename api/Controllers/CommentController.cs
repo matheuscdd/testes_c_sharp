@@ -41,7 +41,7 @@ namespace api.Controllers
         }
 
         [HttpPost("{stockId}")]                
-        public async Task<IActionResult> Create([FromRoute] int stockId, [FromBody] CreateCommentDto commentDto)
+        public async Task<IActionResult> Create([FromRoute] int stockId, [FromBody] CreateCommentRequestDto commentDto)
         {
             if (!await _stockRepository.StockExists(stockId)) 
             {
@@ -54,27 +54,17 @@ namespace api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = commentModel.Id }, commentModel.ToCommentDto());
         }
 
-        // [HttpPost]
-        // public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto)
-        // {
-        //     // o nome das chaves no json são case insensitive pro dotnet
-        //     var stockModel = stockDto.ToStockFromCreateDto();
-        //     await _stockRepository.CreateAsync(stockModel);
-        //     // Toda vez que manda um create, no sucesso ele redireciona pra rota de find
-        //     return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel.ToStockDto());
-        // }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentRequestDto commentDto)
+        {
+            var commentModel = await _commentRepository.UpdateAsync(id, commentDto.ToCommentFromUpdate());
+            if (commentModel == null)
+            {
+                return NotFound();
+            }
 
-        // [HttpPut("{id}")]
-        // public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto stockDto)
-        // {
-        //     var stockModel = await _stockRepository.UpdateAsync(id, stockDto);
-        //     if (stockModel == null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     return Ok(stockModel.ToStockDto());
-        // }
+            return Ok(commentModel.ToCommentDto());
+        }
 
         // [HttpDelete("{id}")]
         // public async Task<IActionResult> Delete([FromRoute] int id)

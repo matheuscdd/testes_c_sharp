@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Dtos.Comment;
 using api.Dtos.Stock;
 using api.Interfaces;
 using api.Models;
@@ -14,12 +15,12 @@ namespace api.Repositories
     {
         private readonly ApplicationDBContext _context = context;
 
-        public async Task<Comment> CreateAsync(Comment commentModel)
+        public async Task<Comment> CreateAsync(Comment commentRequest)
         {
-            await _context.Comments.AddAsync(commentModel);
+            await _context.Comments.AddAsync(commentRequest);
             await _context.SaveChangesAsync();
 
-            return commentModel;
+            return commentRequest;
         }
 
         public async Task<List<Comment>> GetAllAsync()
@@ -32,6 +33,19 @@ namespace api.Repositories
             return await _context.Comments.FindAsync(id);
         }
 
-        
+        public async Task<Comment?> UpdateAsync(int id, Comment commentRequest)
+        {
+            var commentStorage = await _context.Comments.FindAsync(id);
+            if (commentStorage == null) {
+                return null;
+            }
+
+            commentStorage.Title = commentRequest.Title;
+            commentStorage.Content = commentRequest.Content;
+
+            await _context.SaveChangesAsync();
+
+            return commentStorage;
+        }
     }
 }

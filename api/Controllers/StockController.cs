@@ -50,7 +50,7 @@ namespace api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto stockDto)
         {
-            var stockModel = await _stockRepository.UpdateAsync(id, stockDto);
+            var stockModel = await _stockRepository.UpdateAsync(id, stockDto.ToStockFromUpdateDto());
             if (stockModel == null)
             {
                 return NotFound();

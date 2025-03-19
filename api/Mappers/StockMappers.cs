@@ -25,8 +25,20 @@ namespace api.Mappers
             };
         }
 
-        // caso não mande uma chave, não está travando
         public static Stock ToStockFromCreateDto(this CreateStockRequestDto stockDto)
+        {
+            return new Stock
+            {
+                Symbol = stockDto.Symbol,
+                CompanyName = stockDto.CompanyName,
+                Industry = stockDto.Industry,
+                LastDiv = stockDto.LastDiv,
+                MarketCap = stockDto.MarketCap,
+                Purchase = stockDto.Purchase,
+            };
+        }
+
+        public static Stock ToStockFromUpdateDto(this UpdateStockRequestDto stockDto)
         {
             return new Stock
             {
