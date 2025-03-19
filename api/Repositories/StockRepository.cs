@@ -9,7 +9,6 @@ using api.Helpers;
 using api.Interfaces;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Any;
 
 namespace api.Repositories
 {
@@ -68,8 +67,10 @@ namespace api.Repositories
             }
 
             stocks = insertSort(stocks, queryParams);
+
+            var skipNumber = (queryParams.PageNumber - 1) * queryParams.PageSize;
     
-            return await stocks.ToListAsync();
+            return await stocks.Skip(skipNumber).Take(queryParams.PageSize).ToListAsync();
         }
 
         public async Task<Stock?> GetByIdAsync(int id)
