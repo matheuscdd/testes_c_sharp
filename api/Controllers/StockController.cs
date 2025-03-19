@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Stock;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -17,14 +18,14 @@ namespace api.Controllers
         private readonly IStockRepository _stockRepository = stockRepository;
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] QueryParams queryParams)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var stocksModels = await _stockRepository.GetAllAsync();
+            var stocksModels = await _stockRepository.GetAllAsync(queryParams);
             var stocksDto = stocksModels.Select(s => s.ToStockDto());
 
             return Ok(stocksDto);
@@ -86,7 +87,7 @@ namespace api.Controllers
             {
                 return BadRequest(ModelState);
             }
-            
+
             var stockModel = await _stockRepository.DeleteAsync(id);
             if (stockModel == null)
             {

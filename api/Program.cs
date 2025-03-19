@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using api.Data;
 using api.Interfaces;
 using api.Repositories;
@@ -18,6 +19,10 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 );
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
+);
 
 var app = builder.Build();
 
