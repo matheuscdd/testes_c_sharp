@@ -21,9 +21,14 @@ dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.0
 dotnet add package Microsoft.EntityFrameworkCore.Tools --version 8.0.0
 dotnet add package Microsoft.EntityFrameworkCore.Design --version 8.0.0
 
-# Instalar dependências de MVC
+# Instalar dependências de manipulação de Json
 dotnet add package Newtonsoft.Json --version 13.0.3
 dotnet add package Microsoft.AspNetCore.Mvc.NewtonsoftJson --version 8.0.0
+
+# Instalar dependências para JWT
+dotnet add package Microsoft.Extensions.Identity.Core --version 8.0.0
+dotnet add package Microsoft.AspNetCore.Identity.EntityFrameworkCore --version 8.0.0
+dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer --version 8.0.0
 
 # Cria o arquivo de manifesto
 dotnet new tool-manifest
