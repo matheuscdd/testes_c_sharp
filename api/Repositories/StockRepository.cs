@@ -23,15 +23,16 @@ namespace api.Repositories
 
         public async Task<Stock?> DeleteAsync(int id)
         {
-            var stockModel = await _context.Stocks.FindAsync(id);
-            if (stockModel == null) {
+            var stockStorage = await _context.Stocks.FindAsync(id);
+            if (stockStorage == null) 
+            {
                 return null;
             }
 
-            _context.Stocks.Remove(stockModel);
+            _context.Stocks.Remove(stockStorage);
             await _context.SaveChangesAsync();
 
-            return stockModel;
+            return stockStorage;
         }
 
         public async Task<List<Stock>> GetAllAsync()
@@ -52,7 +53,8 @@ namespace api.Repositories
         public async Task<Stock?> UpdateAsync(int id, Stock stockRequest)
         {
             var stockStorage = await _context.Stocks.FindAsync(id);
-            if (stockStorage == null) {
+            if (stockStorage == null) 
+            {
                 return null;
             }
 
@@ -62,7 +64,7 @@ namespace api.Repositories
             stockStorage.LastDiv = stockRequest.LastDiv;
             stockStorage.Industry = stockRequest.Industry;
             stockStorage.MarketCap = stockRequest.MarketCap;
-//
+
             await _context.SaveChangesAsync();
 
             return stockStorage;

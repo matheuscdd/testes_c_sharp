@@ -66,16 +66,16 @@ namespace api.Controllers
             return Ok(commentModel.ToCommentDto());
         }
 
-        // [HttpDelete("{id}")]
-        // public async Task<IActionResult> Delete([FromRoute] int id)
-        // {
-        //     var stockModel = await _stockRepository.DeleteAsync(id);
-        //     if (stockModel == null)
-        //     {
-        //         return NotFound();
-        //     }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var commentModel = await _commentRepository.DeleteAsync(id);
+            if (commentModel == null)
+            {
+                return NotFound();
+            }
 
-        //     return NoContent();
-        // }
+            return NoContent();
+        }
     }
 }

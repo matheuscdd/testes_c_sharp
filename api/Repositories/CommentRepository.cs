@@ -23,6 +23,20 @@ namespace api.Repositories
             return commentRequest;
         }
 
+        public async Task<Comment?> DeleteAsync(int id)
+        {
+            var commentStorage = await _context.Comments.FindAsync(id);
+            if (commentStorage == null) 
+            {
+                return null;
+            }
+
+            _context.Comments.Remove(commentStorage);
+            await _context.SaveChangesAsync();
+
+            return commentStorage;
+        }
+
         public async Task<List<Comment>> GetAllAsync()
         {
             return await _context.Comments.ToListAsync();
@@ -36,7 +50,8 @@ namespace api.Repositories
         public async Task<Comment?> UpdateAsync(int id, Comment commentRequest)
         {
             var commentStorage = await _context.Comments.FindAsync(id);
-            if (commentStorage == null) {
+            if (commentStorage == null) 
+            {
                 return null;
             }
 
