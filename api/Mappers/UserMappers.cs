@@ -15,7 +15,7 @@ namespace api.Mappers
             return new UserDto
             {
                 Id = userModel.Id.ToString(),
-                Username = userModel.UserName!,
+                UserName = userModel.UserName!,
                 Email = userModel.Email!,
             };
         }

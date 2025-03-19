@@ -48,17 +48,51 @@ namespace api.Controllers
             return Ok(userModel.ToUserDto());
         }
 
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginUserRequestDto userDto)
+        {
+            try 
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }  
+
+                var userModel = await _userRepository.GetByUserNameAsync(userDto.UserName!.ToLower());
+                if (userModel == null)
+                {
+                    return Unauthorized();
+                }
+
+                var token = await _userRepository.Login(userModel, userDto.Password!);
+                if (token == null)
+                {
+                    return Unauthorized();
+                }
+
+                return Ok(new Dictionary<string, string>
+                {
+                    { "token", token }
+                });
+            }
+            catch(Exception e) 
+            {
+                return BadRequest(e);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserRequestDto userDto)
         {
-            try {
+            try 
+            {
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(ModelState);
                 }      
 
                 var (userModel, errors) = await _userRepository.CreateAsync(
-                    new User{ UserName = userDto.Username,  Email = userDto.Email!.ToLower()}, 
+                    new User{ UserName = userDto.UserName!.ToLower(),  Email = userDto.Email!.ToLower()}, 
                     userDto.Password!
                 );
 
@@ -69,11 +103,11 @@ namespace api.Controllers
 
                 return CreatedAtAction(nameof(GetById), new { id = userModel!.Id }, userModel.ToUserDto());
 
-            } catch(Exception e) {
-                Console.WriteLine(e);
+            } 
+            catch(Exception e) 
+            {
                 return BadRequest(e);
             }
-            
         }
     }
 }

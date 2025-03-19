@@ -14,6 +14,8 @@ namespace api.Interfaces
     {
         Task<List<User>> GetAllAsync();
         Task<User?> GetByIdAsync(string id);
+        Task<User?> GetByUserNameAsync(string username);
+        Task<string?> Login(User userModel, string password);
         Task<(User?, IEnumerable<IdentityError>? Errors)> CreateAsync(User userModel, string password);
     }
 }

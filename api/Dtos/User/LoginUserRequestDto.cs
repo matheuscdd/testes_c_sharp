@@ -7,21 +7,12 @@ using api.Data;
 
 namespace api.Dtos.User
 {
-    public class CreateUserRequestDto
+    public class LoginUserRequestDto
     {
         [Required]
-        [MinLength(3)]
         public string? UserName { get; set; }
 
         [Required]
-        [EmailAddress]
-        [MinLength(5)]
-        public string? Email { get; set; }
-
-        [Required]
-        [MinLength(12)]
         public string? Password { get; set; }
-
-
     }
 }
