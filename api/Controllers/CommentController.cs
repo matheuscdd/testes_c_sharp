@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Dtos.Comment;
 using api.Dtos.Stock;
 using api.Interfaces;
 using api.Mappers;
+using api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
 {
     [Route("api/comments")]
     [ApiController]
-    public class CommentController(ICommentRepository commentRepository) : ControllerBase
+    public class CommentController(ICommentRepository commentRepository, IStockRepository stockRepository) : ControllerBase
     {
         private readonly ICommentRepository _commentRepository = commentRepository;
+        private readonly IStockRepository _stockRepository = stockRepository;
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -35,6 +38,20 @@ namespace api.Controllers
             }
 
             return Ok(commentModel.ToCommentDto());
+        }
+
+        [HttpPost("{stockId}")]                
+        public async Task<IActionResult> Create([FromRoute] int stockId, [FromBody] CreateCommentDto commentDto)
+        {
+            if (!await _stockRepository.StockExists(stockId)) 
+            {
+                return NotFound();
+            }
+
+            var commentModel = commentDto.ToCommentFromCreate(stockId);
+            await _commentRepository.CreateAsync(commentModel);
+            
+            return CreatedAtAction(nameof(GetById), new { id = commentModel.Id }, commentModel.ToCommentDto());
         }
 
         // [HttpPost]

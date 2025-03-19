@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using api.Dtos.Stock;
 using api.Models;
 
-// Aqui parace com o GO, meio que estou inserindo na model esse método
+// Aqui parace com o GO, meio que estou inserindo nas outras classes métodos
 namespace api.Mappers
 {
     public static class StockMappers

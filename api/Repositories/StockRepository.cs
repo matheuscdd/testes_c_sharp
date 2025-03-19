@@ -44,6 +44,11 @@ namespace api.Repositories
             return await _context.Stocks.Include(el => el.Comments).FirstOrDefaultAsync(el => el.Id == id);
         }
 
+        public async Task<bool> StockExists(int id)
+        {
+            return await _context.Stocks.AnyAsync(el => el.Id == id);
+        }
+
         public async Task<Stock?> UpdateAsync(int id, UpdateStockRequestDto stockDto)
         {
             var stockModel = await _context.Stocks.FindAsync(id);
