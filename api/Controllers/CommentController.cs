@@ -9,7 +9,6 @@ using api.Interfaces;
 using api.Mappers;
 using api.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace api.Controllers
 {
