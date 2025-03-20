@@ -23,6 +23,11 @@ namespace api.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserPortfolio()
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
@@ -41,8 +46,13 @@ namespace api.Controllers
 
         [HttpPost("{stockId:int}")]
         [Authorize]
-        public async Task<IActionResult> AddPortfolio([FromRoute] int stockId)
+        public async Task<IActionResult> Create([FromRoute] int stockId)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
@@ -77,6 +87,42 @@ namespace api.Controllers
             if (portfolioModel == null)
             {
                 return Problem(title: "Could not create", statusCode: StatusCodes.Status500InternalServerError);
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{stockId:int}")]
+        [Authorize]
+        public async Task<IActionResult> Delete([FromRoute] int stockId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var userModel = await _userRepository.GetByIdAsync(userId);
+            if (userModel == null)
+            {
+                return Unauthorized();
+            }
+
+            var stockModel = await _stockRepository.GetByIdWithoutCommentsAsync(stockId);
+            if (stockModel == null)
+            {
+                return Problem(title: "This stock does not exists", statusCode: StatusCodes.Status404NotFound);
+            }
+
+            var portfolioModel = await _portfolioRepository.DeleteAsync(userModel, stockModel);
+            if (portfolioModel == null)
+            {
+                return Problem(title: "This user does not have this stock in his portfolio", statusCode: StatusCodes.Status404NotFound);
             }
 
             return NoContent();
