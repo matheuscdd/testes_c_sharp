@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using api.Interfaces;
+using api.Mappers;
 using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -40,8 +41,19 @@ namespace api.Controllers
                 return Unauthorized();
             }
 
-            var portfolioModel = await _portfolioRepository.GetUserPortfolioAsync(userModel);
-            return Ok(portfolioModel);
+            var stocksModels = await _portfolioRepository.GetUserPortfolioAsync(userModel);
+            var stocksDto = stocksModels.Select(el => el.ToStockDto()).Select(el => new {
+                el.Id,
+                el.Symbol,
+                el.CompanyName,
+                el.Purchase,
+                el.LastDiv,
+                el.Industry,
+                el.MarketCap,
+            }).ToList();
+            
+
+            return Ok(stocksDto);
         }
 
         [HttpPost("{stockId:int}")]
@@ -113,13 +125,12 @@ namespace api.Controllers
                 return Unauthorized();
             }
 
-            var stockModel = await _stockRepository.GetByIdWithoutCommentsAsync(stockId);
-            if (stockModel == null)
+            if (!await _stockRepository.StockExists(stockId))
             {
                 return Problem(title: "This stock does not exists", statusCode: StatusCodes.Status404NotFound);
             }
 
-            var portfolioModel = await _portfolioRepository.DeleteAsync(userModel, stockModel);
+            var portfolioModel = await _portfolioRepository.DeleteAsync(userId, stockId);
             if (portfolioModel == null)
             {
                 return Problem(title: "This user does not have this stock in his portfolio", statusCode: StatusCodes.Status404NotFound);

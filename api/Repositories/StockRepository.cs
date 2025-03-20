@@ -16,7 +16,7 @@ namespace api.Repositories
     {
         private readonly ApplicationDBContext _context = context;
 
-        private static IQueryable<Stock> insertSort(IQueryable<Stock> stocks, QueryParams queryParams)
+        private static IQueryable<Stock> InsertSort(IQueryable<Stock> stocks, QueryParams queryParams)
         {
             return queryParams.SortBy switch
             {
@@ -54,7 +54,7 @@ namespace api.Repositories
 
         public async Task<List<Stock>> GetAllAsync(QueryParams queryParams)
         {
-            var stocks = _context.Stocks.Include(el => el.Comments).AsQueryable();
+            var stocks = _context.Stocks.Include(el => el.Comments).ThenInclude(el => el.User).AsQueryable();
             
             if (!string.IsNullOrWhiteSpace(queryParams.CompanyName)) 
             {
@@ -66,7 +66,7 @@ namespace api.Repositories
                 stocks = stocks.Where(el => el.Symbol.Contains(queryParams.Symbol));
             }
 
-            stocks = insertSort(stocks, queryParams);
+            stocks = InsertSort(stocks, queryParams);
 
             var skipNumber = (queryParams.PageNumber - 1) * queryParams.PageSize;
     
@@ -75,7 +75,7 @@ namespace api.Repositories
 
         public async Task<Stock?> GetByIdWithCommentsAsync(int id)
         {
-            return await _context.Stocks.Include(el => el.Comments).FirstOrDefaultAsync(el => el.Id == id);
+            return await _context.Stocks.Include(el => el.Comments).ThenInclude(el => el.User).FirstOrDefaultAsync(el => el.Id == id);
         }
 
         public async Task<Stock?> GetByIdWithoutCommentsAsync(int id)

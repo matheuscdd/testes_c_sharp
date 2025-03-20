@@ -13,6 +13,6 @@ namespace api.Interfaces
         Task<List<Stock>> GetUserPortfolioAsync(User userModel);
         Task<bool> PortfolioExistsAsync(User userModel, Stock stockModel);
         Task<Portfolio> CreateAsync(Portfolio portfolioRequest);
-        Task<Portfolio?> DeleteAsync(User userModel, Stock stockModel);
+        Task<Portfolio?> DeleteAsync(string userId, int stockId);
     }
 }

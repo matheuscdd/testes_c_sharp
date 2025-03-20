@@ -13,6 +13,8 @@ namespace api.Models
         public required string Title { get; set; }
         public required string Content { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;
+        public string? UserId { get; set; }
+        public User? User { get; set; }
         public int StockId { get; set; }
         
         // Navigation property serve para ajudar nas queries 

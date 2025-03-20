@@ -28,7 +28,7 @@ namespace api.Controllers
             }
 
             var userModels = await _userRepository.GetAllAsync();
-            var usersDto = userModels.Select(el => el.ToUserDto());
+            var usersDto = userModels.Select(el => el.ToUserDto()).ToList();
 
             return Ok(usersDto);
         }

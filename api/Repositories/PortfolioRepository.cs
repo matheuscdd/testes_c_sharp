@@ -37,10 +37,10 @@ namespace api.Repositories
             return portfolioRequest;
         }
 
-        public async Task<Portfolio?> DeleteAsync(User userModel, Stock stockModel)
+        public async Task<Portfolio?> DeleteAsync(string userId, int stockId)
         {
             var portfolioStorage = await _context.Portfolios
-                .FirstOrDefaultAsync(el => el.UserId == userModel.Id && el.StockId == stockModel.Id);
+                .FirstOrDefaultAsync(el => el.UserId == userId && el.StockId == stockId);
 
             if (portfolioStorage == null)
             {
