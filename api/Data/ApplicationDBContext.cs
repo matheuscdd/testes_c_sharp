@@ -18,6 +18,7 @@ namespace api.Data
         {
             base.OnModelCreating(builder);
 
+            // Garante o unique together, caso tivesse mais campos funcionaria também setando apenas alguns como unique together
             builder.Entity<Portfolio>(x => x.HasKey(p => new { p.UserId, p.StockId }));
 
             builder.Entity<Portfolio>()

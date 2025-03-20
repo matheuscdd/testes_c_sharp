@@ -73,9 +73,14 @@ namespace api.Repositories
             return await stocks.Skip(skipNumber).Take(queryParams.PageSize).ToListAsync();
         }
 
-        public async Task<Stock?> GetByIdAsync(int id)
+        public async Task<Stock?> GetByIdWithCommentsAsync(int id)
         {
             return await _context.Stocks.Include(el => el.Comments).FirstOrDefaultAsync(el => el.Id == id);
+        }
+
+        public async Task<Stock?> GetByIdWithoutCommentsAsync(int id)
+        {
+            return await _context.Stocks.FindAsync(id);
         }
 
         public async Task<bool> StockExists(int id)

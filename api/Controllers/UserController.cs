@@ -6,6 +6,7 @@ using api.Dtos.User;
 using api.Interfaces;
 using api.Mappers;
 using api.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -18,6 +19,7 @@ namespace api.Controllers
         private readonly IUserRepository _userRepository = userRepository;
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         {
             if (!ModelState.IsValid)
@@ -32,6 +34,7 @@ namespace api.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        [Authorize]
         public async Task<IActionResult> GetById([FromRoute] string id)
         {
             if (!ModelState.IsValid)

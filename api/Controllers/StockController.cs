@@ -42,7 +42,7 @@ namespace api.Controllers
                 return BadRequest(ModelState);
             }
 
-            var stockModel = await _stockRepository.GetByIdAsync(id);
+            var stockModel = await _stockRepository.GetByIdWithCommentsAsync(id);
             if (stockModel == null)
             {
                 return NotFound();

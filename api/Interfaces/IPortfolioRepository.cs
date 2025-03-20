@@ -11,8 +11,8 @@ namespace api.Interfaces
     public interface IPortfolioRepository
     {
         Task<List<Stock>> GetUserPortfolioAsync(User userModel);
-        // Task<Stock?> GetByIdAsync(int id);
-        // Task<Stock> CreateAsync(Stock stockModel);
+        Task<bool> PortfolioExistsAsync(User userModel, Stock stockModel);
+        Task<Portfolio> CreateAsync(Portfolio portfolioRequest);
         // Task<Stock?> UpdateAsync(int id, Stock stockRequest);
         // Task<Stock?> DeleteAsync(int id);
         // Task<bool> StockExists(int id);

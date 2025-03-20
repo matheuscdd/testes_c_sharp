@@ -6,9 +6,11 @@ using api.Repositories;
 using api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,10 +22,13 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 );
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Page a string de conexão do banco de dados
 builder.Services.AddDbContext<ApplicationDBContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+// Configuração de senha do identity
 builder.Services.AddIdentity<User, IdentityRole>(options => {
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
@@ -32,6 +37,7 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
     options.Password.RequiredLength = 12;
 }).AddEntityFrameworkStores<ApplicationDBContext>();
 
+// Configuração o 
 builder.Services.AddAuthentication(options => 
     options.DefaultAuthenticateScheme = 
     options.DefaultChallengeScheme = 
@@ -39,6 +45,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultSignInScheme =
     options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme
 ).AddJwtBearer(options => 
+{
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -49,9 +56,31 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(
             System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]!)
         ),
-    }
-);
+    };
 
+    options.Events = new JwtBearerEvents
+    {
+        OnChallenge = context =>
+        {
+            context.HandleResponse();
+
+            var traceId = Activity.Current?.Id ?? context.HttpContext.TraceIdentifier; 
+            var problemDetails = new ProblemDetails
+            {
+                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.2",
+                Title = "Unauthorized",
+                Status = StatusCodes.Status401Unauthorized,
+                Extensions = { { "traceId", traceId } }
+            };
+
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+            return context.Response.WriteAsJsonAsync(problemDetails);
+        }
+    };
+});
+
+// Configuração para colocar no swagger
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
@@ -75,17 +104,22 @@ builder.Services.AddSwaggerGen(option =>
                     Id="Bearer"
                 }
             },
-            new string[]{}
+            Array.Empty<string>()
         }
     });
 });
 
+// Dependências a serem injetadas
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+// Serve para retornar todas as rotas e erros como problem details
+builder.Services.AddProblemDetails();
+
+// Serve para mostrar o Enum como strings no Swagger
 builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
 );
@@ -101,9 +135,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Permite o fluxo de autenticação
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Os dois servem para retornar todas as rotas e erros como problem details
+app.UseExceptionHandler();
+app.UseStatusCodePages();
+
+// Define o método como as rotas serão definidas
 app.MapControllers();
 
 app.Run();

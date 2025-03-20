@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using api.Extensions;
 using api.Interfaces;
 using api.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -23,10 +23,63 @@ namespace api.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserPortfolio()
         {
-            var user = User.GetUsername();
-            var userModel = await _userRepository.GetByUserNameAsync(user);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var userModel = await _userRepository.GetByIdAsync(userId);
+            if (userModel == null)
+            {
+                return Unauthorized();
+            }
+
             var portfolioModel = await _portfolioRepository.GetUserPortfolioAsync(userModel);
             return Ok(portfolioModel);
+        }
+
+        [HttpPost("{stockId:int}")]
+        [Authorize]
+        public async Task<IActionResult> AddPortfolio([FromRoute] int stockId)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return Unauthorized();
+            }
+
+            var userModel = await _userRepository.GetByIdAsync(userId);
+            if (userModel == null)
+            {
+                return Unauthorized();
+            }
+
+            var stockModel = await _stockRepository.GetByIdWithoutCommentsAsync(stockId);
+            if (stockModel == null)
+            {
+                return NotFound();
+            }
+
+            if (await _portfolioRepository.PortfolioExistsAsync(userModel, stockModel))
+            {
+                return Problem(title: "User already has this stock", statusCode: StatusCodes.Status409Conflict);
+            }
+
+            var portfolioModel = new Portfolio
+            {
+                StockId = stockModel.Id,
+                UserId = userModel.Id,
+            };
+
+            await _portfolioRepository.CreateAsync(portfolioModel);
+
+            if (portfolioModel == null)
+            {
+                return Problem(title: "Could not create", statusCode: StatusCodes.Status500InternalServerError);
+            }
+
+            return NoContent();
         }
     }
 }
