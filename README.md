@@ -48,7 +48,8 @@ dotnet ef migrations add init
 dotnet ef database update
 
 # SQL Server
-docker run -e "ACCEPT_EULA=Y" \
+docker run \
+   -e "ACCEPT_EULA=Y" \
    -e "MSSQL_SA_PASSWORD=das@3212ASD5d465as4da65" \
    -e "MSSQL_TLS_ENFORCE=0" \
    -p 1433:1433 --name sql1 --hostname sql1 \

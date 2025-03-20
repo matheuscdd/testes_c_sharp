@@ -10,6 +10,6 @@ namespace api.Models
     public class User : IdentityUser
     {
         public int Risk { get; set; }
-
+        public List<Portfolio> Portfolios { get; set; } = [];
     }
 }
