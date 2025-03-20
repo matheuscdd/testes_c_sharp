@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace api.Models 
 {
-    [Table("Portfolio")]
+    [Table("Portfolios")]
     public class Portfolio
     {
         public required string UserId { get; set; }

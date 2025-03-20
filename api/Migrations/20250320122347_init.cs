@@ -200,7 +200,7 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Portfolio",
+                name: "Portfolios",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -208,15 +208,15 @@ namespace api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Portfolio", x => new { x.UserId, x.StockId });
+                    table.PrimaryKey("PK_Portfolios", x => new { x.UserId, x.StockId });
                     table.ForeignKey(
-                        name: "FK_Portfolio_AspNetUsers_UserId",
+                        name: "FK_Portfolios_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Portfolio_Stocks_StockId",
+                        name: "FK_Portfolios_Stocks_StockId",
                         column: x => x.StockId,
                         principalTable: "Stocks",
                         principalColumn: "Id",
@@ -228,8 +228,8 @@ namespace api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6cd72063-ee49-4124-b9de-6e8673d3a7a7", null, "Admin", "ADMIN" },
-                    { "f05d8155-754d-439f-bc98-6cdcf9a7f529", null, "Common", "COMMON" }
+                    { "9d0ad440-b0ce-4b13-8a09-cee8358c61b5", null, "Common", "COMMON" },
+                    { "ee0e13be-4fbd-49e2-814f-06746f83b918", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -277,8 +277,8 @@ namespace api.Migrations
                 column: "StockId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Portfolio_StockId",
-                table: "Portfolio",
+                name: "IX_Portfolios_StockId",
+                table: "Portfolios",
                 column: "StockId");
         }
 
@@ -304,7 +304,7 @@ namespace api.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Portfolio");
+                name: "Portfolios");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
