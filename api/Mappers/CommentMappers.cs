@@ -20,8 +20,8 @@ namespace api.Mappers
                 Content = commentModel.Content,
                 CreatedOn = commentModel.CreatedOn,
                 StockId = commentModel.StockId,
-                UserName = commentModel.User.UserName,
-                UserId = commentModel.UserId,
+                UserName = commentModel.User!.UserName!,
+                UserId = commentModel.UserId!,
             };
         }
 

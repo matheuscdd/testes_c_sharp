@@ -90,7 +90,7 @@ namespace api.Repositories
 
         public async Task<Stock?> UpdateAsync(int id, Stock stockRequest)
         {
-            var stockStorage = await _context.Stocks.FindAsync(id);
+            var stockStorage = await _context.Stocks.Include(el => el.Comments).ThenInclude(el => el.User).FirstOrDefaultAsync(el => el.Id == id);
             if (stockStorage == null) 
             {
                 return null;

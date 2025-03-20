@@ -4,6 +4,9 @@ dotnet new webapi -o api
 # Entra na pasta
 cd api
 
+# Carrega variáveis de ambiente
+source .env
+
 # Hot reload
 dotnet watch run
 

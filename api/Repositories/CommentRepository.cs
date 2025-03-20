@@ -49,7 +49,7 @@ namespace api.Repositories
 
         public async Task<Comment?> UpdateAsync(int id, Comment commentRequest)
         {
-            var commentStorage = await _context.Comments.FindAsync(id);
+            var commentStorage = await _context.Comments.Include(el => el.User).FirstOrDefaultAsync(el => el.Id == id);
             if (commentStorage == null) 
             {
                 return null;

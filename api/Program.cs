@@ -14,6 +14,16 @@ using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var connectString = Environment.GetEnvironmentVariable("DefaultConnection") ?? throw new Exception("Connection_String cannot be empty");
+var host = Environment.GetEnvironmentVariable("Host") ?? throw new Exception("Host cannot be empty");
+var secretKey = Environment.GetEnvironmentVariable("SecretKey") ?? throw new Exception("SecretKey cannot be empty");
+
+builder.Configuration["JWT:Issuer"] = host;
+builder.Configuration["JWT:Audience"] = host;
+builder.Configuration["JWT:SigningKey"] = secretKey;
+builder.Configuration["ConnectionStrings:DefaultConnection"] = connectString;
+
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
