@@ -1,4 +1,4 @@
-name: 'dev'
+name: 'prod'
 services:
   migrater:
     build:
@@ -17,7 +17,7 @@ services:
   asp:
     build: 
       context: ./api
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.prod
       args:
         Host: '${Host}'
         SecretKey: '${SecretKey}'
@@ -25,10 +25,6 @@ services:
     image: asp
     ports:
       - '8080:8080'
-    volumes:
-      - ./api:/App
-      - /App/obj/
-      - /App/bin/
     environment:
         Host: '${Host}'
         SecretKey: '${SecretKey}'
