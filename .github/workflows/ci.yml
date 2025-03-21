@@ -26,10 +26,10 @@ jobs:
       - name: Build docker compose
         uses: hoverkraft-tech/compose-action@v2.0.1
         with:
-          compose-file: "./docker-compose.yml"
+          compose-file: "./docker-compose.prod.yml"
       
       - name: Run Database Migrations
         run: |
           set -e
-          docker compose -f docker-compose.yml exec -T migrater dotnet tool restore
-          docker compose -f docker-compose.yml exec -T migrater dotnet ef database update --verbose
+          docker compose -f docker-compose.prod.yml exec -T migrater dotnet tool restore
+          docker compose -f docker-compose.prod.yml exec -T migrater dotnet ef database update --verbose

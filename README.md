@@ -76,6 +76,10 @@ Cria model > Registra no DbContext > Cria Dto > Cria Map > Cria InterfaceRepo > 
 dos2unix script.sh
 
 # Docker
-## Rodar migrações
-docker compose -f docker-compose.yml exec -T migrater dotnet tool restore
-docker compose -f docker-compose.yml exec -T migrater dotnet ef database update --verbose
+## Rodar migrações dev
+docker compose -f docker-compose.dev.yml exec -T migrater dotnet tool restore
+docker compose -f docker-compose.dev.yml exec -T migrater dotnet ef database update
+
+## Rodar migrações prod
+docker compose -f docker-compose.prod.yml exec -T migrater dotnet tool restore
+docker compose -f docker-compose.prod.yml exec -T migrater dotnet ef database update

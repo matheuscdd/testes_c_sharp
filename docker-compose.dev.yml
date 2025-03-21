@@ -1,0 +1,61 @@
+name: 'dev'
+services:
+  migrater:
+    build:
+      context: ./
+      dockerfile: ./migrater/Dockerfile
+    image: migrater
+    environment:
+      Host: '${Host}'
+      SecretKey: '${SecretKey}'
+      DefaultConnection: '${DefaultConnection}'
+    networks:
+      - net
+    depends_on:
+      - mssql
+      - asp
+  asp:
+    build: 
+      context: ./api
+      dockerfile: Dockerfile.dev
+      args:
+        Host: '${Host}'
+        SecretKey: '${SecretKey}'
+        DefaultConnection: '${DefaultConnection}'
+    image: asp
+    ports:
+      - '5044:5044'
+    volumes:
+      - ./api:/App
+      - /App/obj/
+      - /App/bin/
+    environment:
+        Host: '${Host}'
+        SecretKey: '${SecretKey}'
+        DefaultConnection: '${DefaultConnection}'
+    networks:
+      - net
+    depends_on:
+      - mssql
+  mssql:
+    build:
+      context: ./mssql
+      dockerfile: Dockerfile
+    image: mssql
+    environment:
+      ACCEPT_EULA: 'Y'
+      MSSQL_SA_PASSWORD: '${MSSQL_SA_PASSWORD}'
+      MSSQL_TLS_ENFORCE: 0
+    ports:
+      - '1433:1433'
+    volumes:
+      - storage-mssql:/var/opt/mssql
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
+volumes:
+  storage-mssql:
+    driver: local
