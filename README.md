@@ -50,6 +50,9 @@ dotnet ef migrations add init
 ## Aplica as migrações
 dotnet ef database update
 
+## Aplica migrações pelo docker
+docker exec -it project-asp-migrater-1 sh -c "dotnet tool restore && dotnet ef database update --verbose"
+
 # SQL Server
 docker run \
    -e "ACCEPT_EULA=Y" \
@@ -69,5 +72,10 @@ find / -name sqlcmd 2>/dev/null
 # Passo a passo
 Cria model > Registra no DbContext > Cria Dto > Cria Map > Cria InterfaceRepo > Cria Repo > Adicionar no Program.cs > Cria Controller
 
+# Dos unix
+dos2unix script.sh
+
 # Docker
 ## Rodar migrações
+docker compose -f docker-compose.yml exec -T migrater dotnet tool restore
+docker compose -f docker-compose.yml exec -T migrater dotnet ef database update --verbose
