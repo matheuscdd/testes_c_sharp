@@ -1,0 +1,56 @@
+name: 'project-asp'
+services:
+  # retirar do escopo de prod
+  # migrater:
+  #   image: mcr.microsoft.com/dotnet/sdk:8.0
+  #   environment:
+  #     Host: '${Host}'
+  #     SecretKey: '${SecretKey}'
+  #     DefaultConnection: '${DefaultConnection}'
+  #   volumes:
+  #     - ./api:/App
+  #   command: > 
+  #     sh -c "cd /App && dotnet tool restore && dotnet ef database update && exit"
+  #   depends_on:
+  #     - mssql
+  asp:
+    build: 
+      context: ./api
+      dockerfile: Dockerfile.prod
+      args:
+        Host: '${Host}'
+        SecretKey: '${SecretKey}'
+        DefaultConnection: '${DefaultConnection}'
+    image: asp
+    ports:
+      - '8080:8080'
+    environment:
+        Host: '${Host}'
+        SecretKey: '${SecretKey}'
+        DefaultConnection: '${DefaultConnection}'
+    networks:
+      - net
+    depends_on:
+      - mssql
+  mssql:
+    build:
+      context: ./mssql
+      dockerfile: Dockerfile
+    image: mssql
+    environment:
+      ACCEPT_EULA: 'Y'
+      MSSQL_SA_PASSWORD: '${MSSQL_SA_PASSWORD}'
+      MSSQL_TLS_ENFORCE: 0
+    ports:
+      - '1433:1433'
+    volumes:
+      - storage-mssql:/var/opt/mssql
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
+volumes:
+  storage-mssql:
+    driver: local

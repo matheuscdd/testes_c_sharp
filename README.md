@@ -68,3 +68,6 @@ find / -name sqlcmd 2>/dev/null
 
 # Passo a passo
 Cria model > Registra no DbContext > Cria Dto > Cria Map > Cria InterfaceRepo > Cria Repo > Adicionar no Program.cs > Cria Controller
+
+# Docker
+## Rodar migrações
