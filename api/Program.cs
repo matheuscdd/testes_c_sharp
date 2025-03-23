@@ -11,6 +11,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Diagnostics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Extensions.Hosting;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +29,6 @@ builder.Configuration["JWT:Issuer"] = host;
 builder.Configuration["JWT:Audience"] = host;
 builder.Configuration["JWT:SigningKey"] = secretKey;
 builder.Configuration["ConnectionStrings:DefaultConnection"] = connectString;
-
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -37,6 +43,41 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDBContext>(options => 
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+
+// Configuração signoz
+var resourceBuilder = ResourceBuilder.CreateDefault().AddService("sample-net-app");
+
+builder.Logging.ClearProviders();
+builder.Logging.AddOpenTelemetry(options =>
+{
+    options.IncludeScopes = true;
+    options
+        .SetResourceBuilder(resourceBuilder)
+        .AddOtlpExporter(otlpOptions =>
+        {
+            otlpOptions.Endpoint = new Uri("http://signoz-otel-collector:4317");
+            otlpOptions.Protocol = OtlpExportProtocol.Grpc;
+        });
+});
+builder.Services.AddOpenTelemetry()
+    // .ConfigureResource(resource => 
+	// 	resource.AddService(serviceName: "sample-net-app"))
+    .WithTracing(tracing => tracing
+        .SetResourceBuilder(resourceBuilder)
+        .AddAspNetCoreInstrumentation()
+        .AddOtlpExporter(otlpOptions =>
+        {
+            otlpOptions.Endpoint = new Uri("http://signoz-otel-collector:4317");
+            otlpOptions.Protocol = OtlpExportProtocol.Grpc;
+        }))
+    .WithMetrics(metrics => metrics
+          .AddAspNetCoreInstrumentation()
+          .AddOtlpExporter(otlpOptions =>
+        {
+            otlpOptions.Endpoint = new Uri("http://signoz-otel-collector:4317");
+            otlpOptions.Protocol = OtlpExportProtocol.Grpc;
+        }));
 
 // Configuração de senha do identity
 builder.Services.AddIdentity<User, IdentityRole>(options => {
@@ -133,6 +174,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
 );
+
 
 var app = builder.Build();
 

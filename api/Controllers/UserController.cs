@@ -8,15 +8,22 @@ using api.Mappers;
 using api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
 namespace api.Controllers
 {
     [Route("api/users")]
     [ApiController]
 
-    public class UserController(IUserRepository userRepository) : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly IUserRepository _userRepository = userRepository;
+        private readonly ILogger<UserController> _logger;
+        private readonly IUserRepository _userRepository;
+
+        public UserController(ILogger<UserController> logger, IUserRepository userRepository)
+        {
+            _logger = logger;
+            _userRepository = userRepository;
+        }
+
 
         [HttpGet]
         [Authorize]
@@ -87,6 +94,9 @@ namespace api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserRequestDto userDto)
         {
+            _logger.LogWarning("Keep request");
+            _logger.LogInformation("Keep request");
+
             try 
             {
                 if (!ModelState.IsValid)
@@ -104,11 +114,13 @@ namespace api.Controllers
                     return BadRequest(errors);
                 }
 
+                _logger.LogInformation("User created");
                 return CreatedAtAction(nameof(GetById), new { id = userModel!.Id }, userModel.ToUserDto());
 
             } 
             catch(Exception e) 
             {
+                _logger.LogError("Unespected error");
                 return BadRequest(e);
             }
         }

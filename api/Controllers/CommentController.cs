@@ -18,11 +18,20 @@ namespace api.Controllers
 {
     [Route("api/comments")]
     [ApiController]
-    public class CommentController(ICommentRepository commentRepository, IStockRepository stockRepository, IUserRepository userRepository) : ControllerBase
+    public class CommentController: ControllerBase
     {
-        private readonly ICommentRepository _commentRepository = commentRepository;
-        private readonly IStockRepository _stockRepository = stockRepository;
-        private readonly IUserRepository _userRepository = userRepository;
+        private readonly ILogger<CommentController> _logger;
+        private readonly ICommentRepository _commentRepository;
+        private readonly IStockRepository _stockRepository;
+        private readonly IUserRepository _userRepository;
+        public CommentController(ILogger<CommentController> logger, ICommentRepository commentRepository, IStockRepository stockRepository, IUserRepository userRepository)
+        {
+            _logger = logger;
+            _commentRepository = commentRepository;
+            _stockRepository = stockRepository;
+            _userRepository = userRepository;
+        }
+
 
         [HttpGet]
         [Authorize]

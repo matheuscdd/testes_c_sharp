@@ -24,7 +24,7 @@ services:
         DefaultConnection: '${DefaultConnection}'
     image: asp
     ports:
-      - '8080:8080'
+      - '8000:8000'
     volumes:
       - ./api:/App
       - /App/obj/

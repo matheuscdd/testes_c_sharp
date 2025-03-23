@@ -13,12 +13,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers
 {
     [Route("api/portfolios")]
-    public class PortfolioController(IUserRepository userRepository, IStockRepository stockRepository, IPortfolioRepository portfolioRepository) : ControllerBase
+    public class PortfolioController: ControllerBase
     {
-        private readonly IStockRepository _stockRepository = stockRepository;
-        private readonly IUserRepository _userRepository = userRepository;
-        private readonly IPortfolioRepository _portfolioRepository = portfolioRepository;
+        private readonly ILogger<PortfolioController> _logger;
+        private readonly IStockRepository _stockRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IPortfolioRepository _portfolioRepository;
 
+        public PortfolioController(ILogger<PortfolioController> logger, IUserRepository userRepository, IStockRepository stockRepository, IPortfolioRepository portfolioRepository)
+        {
+            _logger = logger;
+            _userRepository = userRepository;
+            _stockRepository = stockRepository;
+            _portfolioRepository = portfolioRepository;
+        }
+        
         
         [HttpGet]
         [Authorize]

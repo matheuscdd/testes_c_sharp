@@ -14,9 +14,16 @@ namespace api.Controllers
 {
     [Route("api/stocks")]
     [ApiController]
-    public class StockController(IStockRepository stockRepository) : ControllerBase
+    public class StockController: ControllerBase
     {
-        private readonly IStockRepository _stockRepository = stockRepository;
+        private readonly ILogger<StockController> _logger;
+        private readonly IStockRepository _stockRepository;
+        public StockController (ILogger<StockController> logger, IStockRepository stockRepository)
+        {
+            _logger = logger;
+            _stockRepository = stockRepository;
+        }
+
 
         [HttpGet]
         [Authorize]
