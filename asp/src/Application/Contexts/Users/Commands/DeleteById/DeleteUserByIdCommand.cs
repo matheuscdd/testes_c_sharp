@@ -4,8 +4,8 @@ namespace Application.Contexts.Users.Commands.DeleteById;
 
 public class DeleteUserByIdCommand: IRequest
 {
-    public int Id { get; set; }
-    public DeleteUserByIdCommand(int id)
+    public string Id { get; set; }
+    public DeleteUserByIdCommand(string id)
     {
         Id = id;
     }

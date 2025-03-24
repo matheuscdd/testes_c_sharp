@@ -1,27 +1,35 @@
 using Application.Contexts.Users.Repositories;
 using Domain.Entities;
 using Domain.Exceptions.Users;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Repository.Context;
 
 namespace Repository.Repositories.Users;
 
 public class UserRepository: IUserRepository
 {
-    private readonly ApplicationDbContext _context;
+    private readonly UserManager<User> _userManager;
+    // private readonly SignInManager _signInManager;
+    // private readonly ITokenService _tokenService;
 
-    public UserRepository(ApplicationDbContext context)
+    public UserRepository(
+        UserManager<User> userManager
+        // ITokenService tokenService, 
+        // SignInManager<User> signInManager
+    )
     {
-        _context = context;
+        _userManager = userManager;
+        // _tokenService = tokenService;
+        // _signInManager = signInManager;
     }
 
     public async Task<IReadOnlyCollection<User>> GetAllAsync(
         CancellationToken cancellationToken = default)
     {
-        return await _context.User.ToListAsync(cancellationToken);
+        return await _userManager.Users.ToListAsync();
     }
 
-    public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<User> GetByIdAsync(string id, CancellationToken cancellationToken = default)
     {
         var user = await getUserAsync(id, cancellationToken);
         if (user == null)
@@ -31,27 +39,45 @@ public class UserRepository: IUserRepository
         return user;
     }
 
-    private async Task<User?> getUserAsync(int id, CancellationToken cancellationToken)
+    private async Task<User?> getUserAsync(string id, CancellationToken cancellationToken)
     {
-        return await _context.User.FindAsync([id, cancellationToken]);
+        return await Task.Run(() => _userManager.FindByIdAsync(id), cancellationToken);
     }
 
-    public async Task<User> AddAsync(User entity,
-        CancellationToken cancellationToken = default)
+    public async Task<User> CreateAsync(
+        User entity, 
+        string password,
+        CancellationToken cancellationToken = default
+    )
     {
-        await _context.User.AddAsync(entity);
-        await _context.SaveChangesAsync(cancellationToken);
-        return entity;
+        var queryResult = await Task.Run(() => _userManager.CreateAsync(entity, password), cancellationToken);
+
+        if (queryResult.Succeeded)
+            {
+                var roleResult = await _userManager.AddToRoleAsync(entity, "Common"); // Aqui é a role definida no context
+                if (roleResult.Succeeded)
+                {
+                    return entity;
+                }
+                else
+                {
+                    throw new ValidationUserException(string.Join(";", roleResult.Errors));
+                }
+            } 
+        else
+        {
+            throw new ValidationUserException(string.Join(";", queryResult.Errors));
+        }
     }
 
-    public async Task<User> UpdateAsync(User entity, CancellationToken cancellationToken = default)
-    {
-        _context.Update(entity);
-        await _context.SaveChangesAsync(cancellationToken);
-        return entity;
-    } 
+    // public async Task<User> UpdateAsync(User entity, CancellationToken cancellationToken = default)
+    // {
+    //     _context.Update(entity);
+    //     await _context.SaveChangesAsync(cancellationToken);
+    //     return entity;
+    // } 
 
-    public async Task<User> DeleteAsync(int id,
+    public async Task<User> DeleteAsync(string id,
         CancellationToken cancellationToken = default)
     {
         var user = await getUserAsync(id, cancellationToken);
@@ -59,8 +85,9 @@ public class UserRepository: IUserRepository
         {
             throw new NotFoundUserException();
         }
-        _context.Remove(user);
-        await _context.SaveChangesAsync(cancellationToken);
+        // TODO - ajustar
+        // _context.Remove(user);
+        // await _context.SaveChangesAsync(cancellationToken);
         return user;
     }
 

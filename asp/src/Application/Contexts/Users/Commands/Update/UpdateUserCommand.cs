@@ -6,8 +6,8 @@ namespace Application.Contexts.Users.Commands.Update;
 
 public class UpdateUserCommand: IRequest<UserDto>
 {
-    public int Id { get; set; }
-    public string? Name { get; set; }
-    public DateTime BirthDate { get; set; }
-    public Gender Gender { get; set; }
+    public string? Id { get; set; }
+    public string? UserName { get; set; }
+    public string? Email { get; set; }
+    public string? Password { get; set; }
 }

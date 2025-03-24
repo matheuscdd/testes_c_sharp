@@ -1,69 +1,56 @@
 using System.ComponentModel.DataAnnotations;
 using Domain.Exceptions.Users;
+using Microsoft.AspNetCore.Identity;
 
 namespace Domain.Entities;
 
-public class User : Entity
+public class User : IdentityUser
 {
-    [Required]
-    [MinLength(3)]
-    public string Name { get; private set; }
-
-    [Required]
-    public DateTime BirthDate { get; private set; }
-
-    [Required]
-    public Gender Gender { get; private set; }
-    public bool IsActive { get; private set; }
+    public List<Portfolio> Portfolios { get; set; } = [];
+    // [Required]
+    // public Gender Gender { get; private set; }
+    // public bool IsActive { get; private set; }
     protected User(){ }
-    public User(string name, DateTime birthDate, Gender gender)
+
+    // TODO ajustar construtor
+    public User(string username, string email)
     {
-        Name = name;
-        BirthDate = birthDate;
-        Gender = gender;
-        IsActive = true;
-        Validate();
+        Email = email;
+        UserName = username;
     }
 
-    private void Validate()
+    public void ChangeUsername(string username)
     {
-        var context = new ValidationContext(this);
-        var results = new List<ValidationResult>();
-        
-        bool isValid = Validator.TryValidateObject(this, context, results, true);
-        
-        if (!isValid)
-        {
-            throw new ValidationUserException(string.Join("; ", results.ConvertAll(r => r.ErrorMessage)));
-        }
+        UserName = username;
     }
 
-    public void Activate()
+    public void ChangeEmail(string email)
     {
-        if (IsActive) 
-        {
-            throw new InvalidOperationException("User is already active");
-        }
-
-        IsActive = true;
+        Email = email;
     }
 
-    public void Deactivate()
-    {
-        if (!IsActive)
-        {
-            throw new InvalidOperationException("User already is not active");
-        }
-        IsActive = false;
-    }
+    // TODO - trocar password
+    // public void ChangeEmail(string email)
+    // {
+    //     Email = email;
+    // }
 
-    public void ChangeName(string name)
-    {
-        Name = name;
-    }
+    // public void Activate()
+    // {
+    //     if (IsActive) 
+    //     {
+    //         throw new InvalidOperationException("User is already active");
+    //     }
 
-    public void ChangeBirthDate(DateTime birthDate)
-    {
-        BirthDate = birthDate;
-    }
+    //     IsActive = true;
+    // }
+
+    // public void Deactivate()
+    // {
+    //     if (!IsActive)
+    //     {
+    //         throw new InvalidOperationException("User already is not active");
+    //     }
+    //     IsActive = false;
+    // }
 }

@@ -5,17 +5,15 @@ namespace Application.Contexts.Users.Dtos;
 public class UserDto
 {
     public int Id { get; set; }
-    public string Name { get; set; }
-    public DateTime BirthDate { get; set; }
-    public Gender Gender { get; set; }
+    public string UserName { get; set; }
+    public string Email { get; set; }
+    // TODO - precisar a questão da senha
     public UserDto() {}
 
-    public UserDto(string name, DateTime birthDate, Gender gender, int id)
+    public UserDto(string username, string email)
     {
-        Id = id;
-        Name = name;
-        BirthDate = birthDate;
-        Gender = gender;
+        UserName = username;
+        Email = email;
     }
 
 }

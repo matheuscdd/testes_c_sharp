@@ -18,24 +18,9 @@ public class UpdateUserHandler: IRequestHandler<UpdateUserCommand, UserDto>
         CancellationToken cancellationToken)
     {
         var entity = await _userRepository.GetByIdAsync(request.Id, cancellationToken);
-        if (entity == null)
-        {
-            throw new ArgumentException("Entity not found");
-        }
-
-        if (request.Gender != entity.Gender)
-        {
-            throw new ArgumentException("Gender not match");
-        }
-
-        if (!entity.IsActive)
-        {
-            throw new ArgumentException("User is not active");
-        }
-
-        entity.ChangeName(request.Name);
-        entity.ChangeBirthDate(request.BirthDate);
-        entity = await _userRepository.UpdateAsync(entity, cancellationToken);
+        entity.ChangeEmail(request.Email);
+        entity.ChangeUsername(request.UserName);
+        // entity = await _userRepository.UpdateAsync(entity, cancellationToken);
         var dto = entity.Adapt<UserDto>();
         return dto;
     }

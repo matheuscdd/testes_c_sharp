@@ -5,8 +5,8 @@ namespace Application.Contexts.Users.Queries.GetById;
 
 public class GetUserByIdQuery: IRequest<UserDto?>
 {
-    public int Id { get; set; }
-    public GetUserByIdQuery(int id)
+    public string Id { get; set; }
+    public GetUserByIdQuery(string id)
     {
         Id = id;
     }

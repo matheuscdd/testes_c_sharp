@@ -1,9 +1,11 @@
 using System.Net;
 using System.Text.Json.Serialization;
 using Application.Contexts.Users.Repositories;
+using Domain.Entities;
 using Domain.Exceptions;
 using Mapster;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -42,6 +44,15 @@ builder.Services.AddMediatR(options =>
     options.RegisterServicesFromAssembly(Application.AssemblyReference
         .GetAssembly());
 });
+
+// Configuração de senha do identity
+builder.Services.AddIdentity<User, IdentityRole>(options => {
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 12;
+}).AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Adicionar o mapters que já configura os métodos de mapping Id = Id
 builder.Services.AddMapster();
