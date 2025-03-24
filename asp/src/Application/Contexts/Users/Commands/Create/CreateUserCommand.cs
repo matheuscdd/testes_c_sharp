@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Formats.Tar;
 using Application.Contexts.Users.Dtos;
 using Application.Contexts.Users.Repositories;

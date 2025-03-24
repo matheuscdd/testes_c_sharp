@@ -1,9 +1,18 @@
+using System.ComponentModel.DataAnnotations;
+using Domain.Exceptions.Users;
+
 namespace Domain.Entities;
 
 public class User : Entity
 {
+    [Required]
+    [MinLength(3)]
     public string Name { get; private set; }
+
+    [Required]
     public DateTime BirthDate { get; private set; }
+
+    [Required]
     public Gender Gender { get; private set; }
     public bool IsActive { get; private set; }
     protected User(){ }
@@ -13,6 +22,20 @@ public class User : Entity
         BirthDate = birthDate;
         Gender = gender;
         IsActive = true;
+        Validate();
+    }
+
+    private void Validate()
+    {
+        var context = new ValidationContext(this);
+        var results = new List<ValidationResult>();
+        
+        bool isValid = Validator.TryValidateObject(this, context, results, true);
+        
+        if (!isValid)
+        {
+            throw new ValidationUserException(string.Join("; ", results.ConvertAll(r => r.ErrorMessage)));
+        }
     }
 
     public void Activate()

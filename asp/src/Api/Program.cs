@@ -1,11 +1,12 @@
 using System.Net;
+using System.Text.Json.Serialization;
 using Application.Contexts.Users.Repositories;
 using Domain.Exceptions;
-using Domain.Exceptions.Users;
 using Mapster;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Repository.Context;
 using Repository.Repositories.Users;
 using Scalar.AspNetCore;
@@ -15,8 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 // personaliza as exceções
 builder.Services.AddProblemDetails();
 builder.Services.AddEndpointsApiExplorer();
-// builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
@@ -34,14 +35,54 @@ builder.Services.AddMediatR(options =>
 
 builder.Services.AddMapster();
 
+// Configuração para colocar no swagger
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
+
+// Serve para mostrar o Enum como strings no Swagger
+builder.Services.AddControllers().AddJsonOptions(options =>
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
+);
 
 var app = builder.Build();
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-// app.MapOpenApi();
+
 app.MapScalarApiReference();
 app.MapControllers();
 
 // personaliza as exceções
+app.UseStatusCodePages();
 app.UseExceptionHandler(config => 
 {
     config.Run(async context => 

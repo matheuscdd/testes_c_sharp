@@ -89,7 +89,7 @@ dotnet new classlib -n Application
 dotnet new classlib -n Domain
 dotnet new classlib -n Repository
 
-# Novo modelo
+# Novo modelo onion
 ## Criar migrações precisa estar na raiz do projeto (src)
 dotnet ef migrations add Init -o Migrations --project Repository --startup-project Api
 
