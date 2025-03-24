@@ -1,0 +1,28 @@
+using Application.Contexts.Users.Dtos;
+using Application.Contexts.Users.Repositories;
+using MediatR;
+
+namespace Application.Contexts.Users.Queries.GetById;
+
+public class GetUserByIdHandler: IRequestHandler<GetUserByIdQuery, UserDto?>
+{
+    private readonly IUserRepository _userRepository;
+    public GetUserByIdHandler(IUserRepository userRepository)
+    {
+        _userRepository = userRepository;
+    }
+
+    public async Task<UserDto?> Handle(
+        GetUserByIdQuery request,
+        CancellationToken cancellationToken
+    )
+    {
+        var entity = await _userRepository.GetByIdAsync(request.Id,  cancellationToken);
+        if (entity == null)
+        {
+            return null;
+        }
+        // TODO - trocar por automapper
+        return new UserDto(entity.Name, entity.BirthDate, entity.Gender);
+    }
+}

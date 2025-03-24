@@ -83,3 +83,18 @@ docker compose -f docker-compose.dev.yml exec -T migrater dotnet ef database upd
 ## Rodar migrações prod
 docker compose -f docker-compose.prod.yml exec -T migrater dotnet tool restore
 docker compose -f docker-compose.prod.yml exec -T migrater dotnet ef database update
+
+# Criar Pasta com classes
+dotnet new classlib -n Application
+dotnet new classlib -n Domain
+dotnet new classlib -n Repository
+
+# Novo modelo
+## Criar migrações precisa estar na raiz do projeto (src)
+dotnet ef migrations add Init -o Migrations --project Repository --startup-project Api
+
+## Executa migrações na raiz (src)
+dotnet ef database update --project Repository --startup-project Api
+
+## Rodar (src)
+dotnet watch run --project Api

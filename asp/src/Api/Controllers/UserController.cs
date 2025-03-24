@@ -48,6 +48,7 @@ public class UserController: ControllerBase
         [FromBody] UpdateUserCommand updateUserCommand
     )
     {
+        updateUserCommand.Id = id;
         var response = await _mediator.Send(updateUserCommand);
         return Ok(response);
     }
