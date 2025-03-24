@@ -1,5 +1,6 @@
 using Application.Contexts.Users.Dtos;
 using Application.Contexts.Users.Repositories;
+using Mapster;
 using MediatR;
 
 namespace Application.Contexts.Users.Commands.Update;
@@ -16,7 +17,6 @@ public class UpdateUserHandler: IRequestHandler<UpdateUserCommand, UserDto>
     public async Task<UserDto> Handle(UpdateUserCommand request, 
         CancellationToken cancellationToken)
     {
-        Console.WriteLine(request.Id);
         var entity = await _userRepository.GetByIdAsync(request.Id, cancellationToken);
         if (entity == null)
         {
@@ -36,7 +36,7 @@ public class UpdateUserHandler: IRequestHandler<UpdateUserCommand, UserDto>
         entity.ChangeName(request.Name);
         entity.ChangeBirthDate(request.BirthDate);
         entity = await _userRepository.UpdateAsync(entity, cancellationToken);
-        // TODO trocar pelo modelo automapper
-        return new UserDto(entity.Name, entity.BirthDate, entity.Gender);
+        var dto = entity.Adapt<UserDto>();
+        return dto;
     }
 }

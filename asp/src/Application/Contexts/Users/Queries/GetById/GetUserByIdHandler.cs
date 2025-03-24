@@ -1,5 +1,6 @@
 using Application.Contexts.Users.Dtos;
 using Application.Contexts.Users.Repositories;
+using Mapster;
 using MediatR;
 
 namespace Application.Contexts.Users.Queries.GetById;
@@ -22,7 +23,8 @@ public class GetUserByIdHandler: IRequestHandler<GetUserByIdQuery, UserDto?>
         {
             return null;
         }
-        // TODO - trocar por automapper
-        return new UserDto(entity.Name, entity.BirthDate, entity.Gender);
+
+        var dto = entity.Adapt<UserDto>();
+        return dto;
     }
 }

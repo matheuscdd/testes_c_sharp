@@ -4,4 +4,6 @@ using MediatR;
 
 namespace Application.Contexts.Users.Queries.GetAll;
 
-public class GetAllUserQuery: IRequest<ReadOnlyCollection<UserDto>> {}
+public class GetAllUserQuery: IRequest<IReadOnlyCollection<UserDto>> {
+    public GetAllUserQuery() {}
+}

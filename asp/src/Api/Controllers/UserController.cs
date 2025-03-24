@@ -12,7 +12,7 @@ namespace Api.Controllers;
 [Route("api/users")]
 public class UserController: ControllerBase
 {
-    private IMediator _mediator;
+    private readonly IMediator _mediator;
 
     public UserController(IMediator mediator)
     {
