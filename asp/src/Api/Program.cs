@@ -13,29 +13,41 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// personaliza as exceções
+// carrega variáveis de ambiente
+var connectString = Environment.GetEnvironmentVariable("DefaultConnection") ?? throw new Exception("Connection_String cannot be empty");
+var host = Environment.GetEnvironmentVariable("Host") ?? throw new Exception("Host cannot be empty");
+var secretKey = Environment.GetEnvironmentVariable("SecretKey") ?? throw new Exception("SecretKey cannot be empty");
+
+builder.Configuration["JWT:Issuer"] = host;
+builder.Configuration["JWT:Audience"] = host;
+builder.Configuration["JWT:SigningKey"] = secretKey;
+builder.Configuration["ConnectionStrings:DefaultConnection"] = connectString;
+
+
+// Personaliza as exceções
 builder.Services.AddProblemDetails();
+
+// Captura os controllers
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-
-var cs = builder.Configuration.GetConnectionString("OnionDb");
-
+// Carrega o driver de acesso ao banco de dados com as models
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(cs).EnableSensitiveDataLogging()
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")).EnableSensitiveDataLogging()
         .LogTo(Console.WriteLine, LogLevel.Information));
 
+// Facilita a injeção e desacomplamento de dependências
 builder.Services.AddMediatR(options =>
 {
     options.RegisterServicesFromAssembly(Application.AssemblyReference
         .GetAssembly());
 });
 
+// Adicionar o mapters que já configura os métodos de mapping Id = Id
 builder.Services.AddMapster();
 
 // Configuração para colocar no swagger
+builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
@@ -69,16 +81,22 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
 );
 
+// Dependências a serem injetadas
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 var app = builder.Build();
-// Configure the HTTP request pipeline.
+
+// Insere o swagger em desenvolvimento
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-
+// Faz a conversão direta entre Classe pra Dto
 app.MapScalarApiReference();
+
+// Mapeia os controllers para serem acessíveis via rota
 app.MapControllers();
 
 // personaliza as exceções
