@@ -1,5 +1,6 @@
 using Application.Contexts.Users.Repositories;
 using Domain.Entities;
+using Domain.Exceptions.Users;
 using Microsoft.EntityFrameworkCore;
 using Repository.Context;
 
@@ -22,7 +23,17 @@ public class UserRepository: IUserRepository
 
     public async Task<User?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        return await _context.User.FindAsync(id);
+        var user = await getUserAsync(id, cancellationToken);
+        if (user == null)
+        {
+            throw new NotFoundUserException();
+        }
+        return user;
+    }
+
+    private async Task<User?> getUserAsync(int id, CancellationToken cancellationToken)
+    {
+        return await _context.User.FindAsync([id, cancellationToken]);
     }
 
     public async Task<User> AddAsync(User entity,
@@ -43,12 +54,11 @@ public class UserRepository: IUserRepository
     public async Task<User> DeleteAsync(int id,
         CancellationToken cancellationToken = default)
     {
-        var user = await GetByIdAsync(id, cancellationToken);
+        var user = await getUserAsync(id, cancellationToken);
         if (user == null)
         {
-            throw new ArgumentException("User not found");
+            throw new NotFoundUserException();
         }
-
         _context.Remove(user);
         await _context.SaveChangesAsync(cancellationToken);
         return user;
