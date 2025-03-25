@@ -21,8 +21,9 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, UserDto>
     public async Task<UserDto> Handle(CreateUserCommand request,
     CancellationToken cancellationToken)
     {
-        var entity = new User(request.UserName, request.Email);
-        entity = await _userRepository.CreateAsync(entity, request.Password, cancellationToken);        var dto = entity.Adapt<UserDto>();
+        var entity = new User(request.UserName, request.Email, request.Password);
+        entity = await _userRepository.CreateAsync(entity, request.Password, cancellationToken);        
+        var dto = entity.Adapt<UserDto>();
         return dto;
     }
 }

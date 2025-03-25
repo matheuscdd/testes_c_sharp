@@ -50,6 +50,11 @@ public class UserRepository: IUserRepository
         CancellationToken cancellationToken = default
     )
     {
+        var usernameExists = await checkUserNameExists(entity.UserName);
+        if (usernameExists) {
+            throw new ConflictUserException($"{nameof(entity.UserName)} already exists");
+        }
+
         var queryResult = await Task.Run(() => _userManager.CreateAsync(entity, password), cancellationToken);
 
         if (queryResult.Succeeded)
@@ -66,7 +71,7 @@ public class UserRepository: IUserRepository
             } 
         else
         {
-            throw new ValidationUserException(string.Join(";", queryResult.Errors));
+            throw new ValidationUserException(string.Join(";", queryResult.ToString()));
         }
     }
 
@@ -91,5 +96,14 @@ public class UserRepository: IUserRepository
         return user;
     }
 
+    public async Task<User?> GetByUserNameAsync(string username)
+    {
+        return await _userManager.Users.FirstOrDefaultAsync(el => el.UserName == username);
+    }
+
+    private async Task<bool> checkUserNameExists(string username)
+    {
+        return await _userManager.Users.AnyAsync(el => el.UserName == username);
+    }
 }
 

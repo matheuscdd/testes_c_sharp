@@ -19,6 +19,7 @@ public class Stock: Entity
     public List<Comment> Comments { get; set; } = [];
     public List<Portfolio> Portfolios { get; set; } = [];
 
+    // TODO - inserir validações no construtor
     protected Stock(
         string symbol, 
         string companyName, 

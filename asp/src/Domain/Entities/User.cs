@@ -1,56 +1,107 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 using Domain.Exceptions.Users;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Linq;
 
 namespace Domain.Entities;
 
 public class User : IdentityUser
 {
+
     public List<Portfolio> Portfolios { get; set; } = [];
-    // [Required]
-    // public Gender Gender { get; private set; }
-    // public bool IsActive { get; private set; }
     protected User(){ }
 
-    // TODO ajustar construtor
-    public User(string username, string email)
+    public User(string username, string email, string password)
     {
-        Email = email;
+        validatePassword(password);
+        validateUserName(username);
+        validateEmail(email);
+        SetUsername(username);
+        SetEmail(email);
+    }
+
+    public void SetUsername(string username)
+    {
         UserName = username;
     }
 
-    public void ChangeUsername(string username)
+    public void SetEmail(string email)
     {
-        UserName = username;
+        Email = email.ToLower();
     }
 
-    public void ChangeEmail(string email)
+    private void validateEmpty(string value, string name)
     {
-        Email = email;
+        if (value.IsNullOrEmpty()) 
+        {
+            throw new ValidationUserException($"{name} cannot be empty");
+        }
     }
 
-    // TODO - trocar password
-    // public void ChangeEmail(string email)
-    // {
-    //     Email = email;
-    // }
+    private void validateLength(string value, string name, int min, int max)
+    {
+        if (value.Length > max) {
+            throw new ValidationUserException($"{name} cannot be greater than {max} characters");
+        } else if (value.Length < min) {
+            throw new ValidationUserException($"{name} cannot be smaller than {min} characters");
+        }
+    }
 
-    // public void Activate()
-    // {
-    //     if (IsActive) 
-    //     {
-    //         throw new InvalidOperationException("User is already active");
-    //     }
+    private void validateEmailFormat(string email, string name)
+    {
+        if (new EmailAddressAttribute().IsValid(email)) return;
+        throw new ValidationUserException($"{name} is invalid");
+    }
 
-    //     IsActive = true;
-    // }
+    private void validatePasswordFormat(string password, string name)
+    {
+        if (!password.Any(char.IsNumber))
+        {
+            throw new ValidationUserException($"{name} must have at least one digit");
+        }
+        else if (!password.Any(char.IsLetter))
+        {
+            throw new ValidationUserException($"{name} must have at least one letter");
+        }
+        else if (!password.Any(char.IsUpper))
+        {
+            throw new ValidationUserException($"{name} must have at least one uppercase letter");
+        }
+        else if (!password.Any(char.IsLower))
+        {
+            throw new ValidationUserException($"{name} must have at least one lowercase letter");
+        }
+        else if (!password.Any(c => !char.IsLetterOrDigit(c)))
+        {
+            throw new ValidationUserException($"{name} must have at least one non alphanumeric character");
+        }
+            
+    }
 
-    // public void Deactivate()
-    // {
-    //     if (!IsActive)
-    //     {
-    //         throw new InvalidOperationException("User already is not active");
-    //     }
-    //     IsActive = false;
-    // }
+
+    private void validatePassword(string password)
+    {
+        const string name = "Password";
+        validateEmpty(password, name);
+        validateLength(password, name, 12, 150);
+        validatePasswordFormat(password, name);
+    }
+
+    
+    private void validateEmail(string email)
+    {
+        const string name = nameof(Email);
+        validateEmpty(email, name);
+        validateLength(email, name, 5, 100);
+        validateEmailFormat(email, name);
+    }
+
+    private void validateUserName(string username)
+    {
+        const string name = nameof(UserName);
+        validateEmpty(username, name);
+        validateLength(username, name, 6, 30);
+    }
 }

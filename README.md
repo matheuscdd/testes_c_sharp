@@ -98,3 +98,6 @@ dotnet ef database update --project Repository --startup-project Api
 
 ## Rodar (src)
 dotnet watch run --project Api
+
+## Build (src)
+dotnet build Api

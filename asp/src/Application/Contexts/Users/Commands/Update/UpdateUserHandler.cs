@@ -18,8 +18,8 @@ public class UpdateUserHandler: IRequestHandler<UpdateUserCommand, UserDto>
         CancellationToken cancellationToken)
     {
         var entity = await _userRepository.GetByIdAsync(request.Id, cancellationToken);
-        entity.ChangeEmail(request.Email);
-        entity.ChangeUsername(request.UserName);
+        entity.SetEmail(request.Email);
+        entity.SetUsername(request.UserName);
         // entity = await _userRepository.UpdateAsync(entity, cancellationToken);
         var dto = entity.Adapt<UserDto>();
         return dto;

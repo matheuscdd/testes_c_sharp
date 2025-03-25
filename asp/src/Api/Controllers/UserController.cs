@@ -26,7 +26,7 @@ public class UserController: ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("{id:string}")]
+    [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] string id)
     {
         var response = await _mediator.Send(new GetUserByIdQuery(id));
@@ -42,7 +42,7 @@ public class UserController: ControllerBase
         return Ok(response);
     }
 
-    [HttpPut("{id:string}")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Update(
         [FromRoute] string id,
         [FromBody] UpdateUserCommand updateUserCommand
@@ -53,7 +53,7 @@ public class UserController: ControllerBase
         return Ok(response);
     }
 
-    [HttpDelete("{id:string}")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete([FromRoute] string id)
     {
         await _mediator.Send(new DeleteUserByIdCommand(id));
