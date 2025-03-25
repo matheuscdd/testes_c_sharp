@@ -1,15 +1,13 @@
 using Application.Contexts.Users.Repositories;
-using Domain.Entities;
-using Domain.Exceptions.Users;
 using MediatR;
 
 namespace Application.Contexts.Users.Commands.Delete;
 
-public class DeleteUserByIdHandler: IRequestHandler<DeleteUserCommand>
+public class DeleteUserHandler: IRequestHandler<DeleteUserCommand>
 {
     private readonly IUserRepository _userRepository;
 
-    public DeleteUserByIdHandler(IUserRepository userRepository)
+    public DeleteUserHandler(IUserRepository userRepository)
     {
         _userRepository = userRepository;
     }

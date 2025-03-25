@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Security.Claims;
 using Application.Contexts.Users.Repositories;
-using Domain.Exceptions.Users;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Middlewares;

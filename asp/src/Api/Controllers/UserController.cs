@@ -5,7 +5,6 @@ using Application.Contexts.Users.Commands.Login;
 using Application.Contexts.Users.Commands.Update;
 using Application.Contexts.Users.Queries.GetAll;
 using Application.Contexts.Users.Queries.GetById;
-using Domain.Exceptions.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

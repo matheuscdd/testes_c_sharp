@@ -19,11 +19,6 @@ public class GetUserByIdHandler: IRequestHandler<GetUserByIdQuery, UserDto?>
     )
     {
         var entity = await _userRepository.GetByIdAsync(request.Id,  cancellationToken);
-        if (entity == null)
-        {
-            return null;
-        }
-
         var dto = entity.Adapt<UserDto>();
         return dto;
     }

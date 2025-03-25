@@ -1,6 +1,6 @@
 using Domain.Entities;
 
-namespace Application.Contexts.Users.Repositories;
+namespace Application.Contexts.Comments.Repositories;
 
 public interface ICommentRepository
 {

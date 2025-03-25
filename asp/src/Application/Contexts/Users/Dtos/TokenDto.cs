@@ -1,5 +1,3 @@
-using Domain.Entities;
-
 namespace Application.Contexts.Users.Dtos;
 
 public class TokenDto

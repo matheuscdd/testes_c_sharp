@@ -1,7 +1,7 @@
-using Application.Contexts.Stocks.GetAll;
+using Application.Contexts.Stocks.Queries.GetAll;
 using Domain.Entities;
 
-namespace Application.Contexts.Users.Repositories;
+namespace Application.Contexts.Stocks.Repositories;
 
 public interface IStockRepository
 {

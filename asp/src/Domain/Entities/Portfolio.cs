@@ -10,7 +10,7 @@ public class Portfolio: Entity
     public Stock? Stock { get; set; }
     public User? User { get; set; }
 
-    // TODO - inserir validações no construtor
+    protected Portfolio() {}
     public Portfolio(string userId, int stockId)
     {
         UserId = userId;

@@ -13,10 +13,10 @@ public class Comment: Entity
     // Navigation property serve para ajudar nas queries 
     public Stock? Stock { get; set; }
 
-    // TODO - inserir validações no construtor
+    protected Comment() {}
     public Comment(
-        string title,
-        string content,
+        string? title,
+        string? content,
         string userId
     )
     {

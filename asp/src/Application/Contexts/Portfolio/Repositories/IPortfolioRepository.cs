@@ -1,6 +1,6 @@
 using Domain.Entities;
 
-namespace Application.Contexts.Users.Repositories;
+namespace Application.Contexts.Portfolios.Repositories;
 
 public interface IPortfolioRepository
 {

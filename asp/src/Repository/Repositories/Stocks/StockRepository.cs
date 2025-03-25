@@ -1,9 +1,9 @@
-using Application.Contexts.Stocks.GetAll;
-using Application.Contexts.Users.Repositories;
 using Domain.Entities;
 using Domain.Enums.Stocks;
 using Repository.Context;
 using Microsoft.EntityFrameworkCore;
+using Application.Contexts.Stocks.Repositories;
+using Application.Contexts.Stocks.Queries.GetAll;
 
 namespace Repository.Repositories.Stocks;
 
