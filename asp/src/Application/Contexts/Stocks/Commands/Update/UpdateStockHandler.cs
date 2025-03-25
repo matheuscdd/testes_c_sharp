@@ -30,7 +30,7 @@ public class UpdateStockHandler : IRequestHandler<UpdateStockCommand, StockDto>
             request.Industry,
             request.MarketCap
         );
-        entity = await _stockRepository.UpdateAsync(entity.Id, entity, cancellationToken);
+        entity = await _stockRepository.UpdateAsync(request.Id, entity, cancellationToken);
         var dto = entity.Adapt<StockDto>();
         return dto;
     }

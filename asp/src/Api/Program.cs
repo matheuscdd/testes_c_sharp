@@ -3,6 +3,9 @@ using System.Net;
 using System.Text.Json.Serialization;
 using api.Services;
 using Api.Middlewares;
+using Application.Contexts.Comments.Repositories;
+using Application.Contexts.Portfolios.Repositories;
+using Application.Contexts.Stocks.Repositories;
 using Application.Contexts.Users.Repositories;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -16,6 +19,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository.Context;
+using Repository.Repositories.Comments;
+using Repository.Repositories.Portfolios;
+using Repository.Repositories.Stocks;
 using Repository.Repositories.Users;
 using Scalar.AspNetCore;
 
@@ -144,6 +150,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 // Dependências a serem injetadas
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IStockRepository, StockRepository>();
+builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 
 var app = builder.Build();
 

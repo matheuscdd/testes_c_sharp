@@ -12,22 +12,22 @@ public class GetAllStockQuery: IRequest<IReadOnlyCollection<StockDto>>
     public bool IsDescending { get; set; } = false;
     public int PageNumber { get; set; } = 1;
     public int PageSize { get; set; } = 20;
-    public GetAllStockQuery() {}
+    // public GetAllStockQuery() {}
 
-    public GetAllStockQuery(
-        string? symbol,
-        string? companyName,
-        ESortBy sortBy = ESortBy.Id,
-        bool isDescending = false,
-        int pageNumber = 1,
-        int pageSize = 20
-    ) 
-    {
-        Symbol = symbol;
-        CompanyName = companyName;
-        SortBy = sortBy;
-        IsDescending = isDescending;
-        PageNumber = pageNumber;
-        PageSize = pageSize;
-    }
+    // public GetAllStockQuery(
+    //     string? symbol,
+    //     string? companyName,
+    //     ESortBy sortBy = ESortBy.Id,
+    //     bool isDescending = false,
+    //     int pageNumber = 1,
+    //     int pageSize = 20
+    // ) 
+    // {
+    //     Symbol = symbol;
+    //     CompanyName = companyName;
+    //     SortBy = sortBy;
+    //     IsDescending = isDescending;
+    //     PageNumber = pageNumber;
+    //     PageSize = pageSize;
+    // }
 }

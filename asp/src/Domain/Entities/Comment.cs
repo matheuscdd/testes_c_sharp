@@ -10,6 +10,7 @@ public class Comment: Entity
     public DateTime CreatedOn { get; private set; } = DateTime.Now;
     public string UserId { get; private set; }
     public User? User { get; set; }
+    public int StockId { get; set; }
     // Navigation property serve para ajudar nas queries 
     public Stock? Stock { get; set; }
 
@@ -17,7 +18,8 @@ public class Comment: Entity
     public Comment(
         string? title,
         string? content,
-        string userId
+        string userId,
+        int stockId
     )
     {
         validateTitle(title);
@@ -25,6 +27,7 @@ public class Comment: Entity
         SetTitle(title);
         SetContent(content);
         UserId = userId;
+        StockId = stockId;
     }
 
      public void SetTitle(string? title)

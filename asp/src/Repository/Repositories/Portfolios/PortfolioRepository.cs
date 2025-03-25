@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Application.Contexts.Users.Repositories;
 using Repository.Context;
 using Domain.Entities;
+using Application.Contexts.Portfolios.Repositories;
 
 namespace Repository.Repositories.Portfolios;
 
