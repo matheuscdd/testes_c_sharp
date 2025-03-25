@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [ApiController]
-[Route("api/stocks")]
+[Route("api/comments")]
 public class CommentController: ControllerBase
 {
     private readonly IMediator _mediator;
@@ -30,7 +30,7 @@ public class CommentController: ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        var response = await _mediator.Send(new GetCommentByIdQuery(id));
+        var response = await _mediator.Send(new GetByIdCommentQuery(id));
         return Ok(response);
     }
 

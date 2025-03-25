@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Repository.Context;
 using Domain.Entities;
 using Application.Contexts.Portfolios.Repositories;
+using Domain.Exceptions;
 
 namespace Repository.Repositories.Portfolios;
 
@@ -9,40 +10,41 @@ public class PortfolioRepository(ApplicationDbContext context) : IPortfolioRepos
     {
         private readonly ApplicationDbContext _context = context;
 
-        public async Task<bool> PortfolioExistsAsync(User userModel, Stock stockModel, CancellationToken cancellationToken = default)
+        private async Task<bool> portfolioExistsAsync(string userId, int stockId, CancellationToken cancellationToken = default)
         {
             return await _context.Portfolios
-                .AnyAsync(el => el.UserId == userModel.Id && el.StockId == stockModel.Id, cancellationToken);
+                .AnyAsync(el => el.UserId == userId && el.StockId == stockId, cancellationToken);
         }
 
-        public async Task<List<Stock>> GetUserPortfolioAsync(User userModel, CancellationToken cancellationToken = default)
+        public async Task<List<Stock>> GetUserPortfolioAsync(string id, CancellationToken cancellationToken = default)
         {
             return await _context.Portfolios
-                .Where(u => u.UserId == userModel.Id)
+                .Where(u => u.UserId == id)
                 .Select(combo => combo.Stock!).ToListAsync(cancellationToken);
         }
 
-        public async Task<Portfolio> CreateAsync(Portfolio entityRequest, CancellationToken cancellationToken = default)
+        public async Task CreateAsync(Portfolio entityRequest, CancellationToken cancellationToken = default)
         {
+            var exists = await portfolioExistsAsync(entityRequest.UserId, entityRequest.StockId, cancellationToken);
+            if (exists)
+            {
+                throw new ConflictCustomException("User already has this stock");
+            }
             await _context.Portfolios.AddAsync(entityRequest, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-
-            return entityRequest;
         }
 
-        public async Task<Portfolio?> DeleteAsync(string userId, int stockId, CancellationToken cancellationToken = default)
+        public async Task DeleteAsync(string userId, int stockId, CancellationToken cancellationToken = default)
         {
             var portfolioStorage = await _context.Portfolios
                 .FirstOrDefaultAsync(el => el.UserId == userId && el.StockId == stockId, cancellationToken);
 
             if (portfolioStorage == null)
             {
-                return null;
+                throw new NotFoundCustomException("User does not have this stock");
             }
 
             _context.Portfolios.Remove(portfolioStorage);
             await _context.SaveChangesAsync(cancellationToken);
-            
-            return portfolioStorage;
         }
     }

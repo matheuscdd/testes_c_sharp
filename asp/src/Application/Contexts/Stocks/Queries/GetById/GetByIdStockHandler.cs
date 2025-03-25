@@ -5,16 +5,16 @@ using MediatR;
 
 namespace Application.Contexts.Stocks.Queries.GetById;
 
-public class GetUserByIdHandler: IRequestHandler<GetStockByIdQuery, StockDto?>
+public class GetByIdStockHandler: IRequestHandler<GetByIdStockQuery, StockDto?>
 {
     private readonly IStockRepository _stockRepository;
-    public GetUserByIdHandler(IStockRepository stockRepository)
+    public GetByIdStockHandler(IStockRepository stockRepository)
     {
         _stockRepository = stockRepository;
     }
 
     public async Task<StockDto?> Handle(
-        GetStockByIdQuery request,
+        GetByIdStockQuery request,
         CancellationToken cancellationToken
     )
     {

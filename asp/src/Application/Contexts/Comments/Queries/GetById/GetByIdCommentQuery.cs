@@ -3,13 +3,13 @@ using MediatR;
 
 namespace Application.Contexts.Comments.Queries.GetById;
 
-public class GetCommentByIdQuery: IRequest<CommentDto?>
+public class GetByIdCommentQuery: IRequest<CommentDto?>
 {
     public int Id { get; set; }
-    public GetCommentByIdQuery(int id)
+    public GetByIdCommentQuery(int id)
     {
         Id = id;
     }
 
-    public GetCommentByIdQuery() {}
+    public GetByIdCommentQuery() {}
 }

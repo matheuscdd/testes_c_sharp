@@ -5,16 +5,16 @@ using MediatR;
 
 namespace Application.Contexts.Comments.Queries.GetById;
 
-public class GetUserByIdHandler: IRequestHandler<GetCommentByIdQuery, CommentDto?>
+public class GetByIdCommentHandler: IRequestHandler<GetByIdCommentQuery, CommentDto?>
 {
     private readonly ICommentRepository _commentRepository;
-    public GetUserByIdHandler(ICommentRepository commentRepository)
+    public GetByIdCommentHandler(ICommentRepository commentRepository)
     {
         _commentRepository = commentRepository;
     }
 
     public async Task<CommentDto?> Handle(
-        GetCommentByIdQuery request,
+        GetByIdCommentQuery request,
         CancellationToken cancellationToken
     )
     {

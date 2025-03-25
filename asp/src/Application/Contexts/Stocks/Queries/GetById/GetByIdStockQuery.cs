@@ -3,13 +3,13 @@ using MediatR;
 
 namespace Application.Contexts.Stocks.Queries.GetById;
 
-public class GetStockByIdQuery: IRequest<StockDto?>
+public class GetByIdStockQuery: IRequest<StockDto?>
 {
     public int Id { get; set; }
-    public GetStockByIdQuery(int id)
+    public GetByIdStockQuery(int id)
     {
         Id = id;
     }
 
-    public GetStockByIdQuery() {}
+    public GetByIdStockQuery() {}
 }

@@ -5,7 +5,7 @@ namespace Application.Contexts.Stocks.Commands.Update;
 
 public class UpdateStockCommand : IRequest<StockDto>
 {
-    public required int Id { get; set; }
+    public int Id { get; set; }
     public string? Symbol { get; set; }
     public string? CompanyName { get; set; }
     public decimal? Purchase { get; set; }

@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using Application.Contexts.Users.Dtos;
 using MediatR;
 

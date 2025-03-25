@@ -32,7 +32,7 @@ public class StockController: ControllerBase
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
-        var response = await _mediator.Send(new GetStockByIdQuery(id));
+        var response = await _mediator.Send(new GetByIdStockQuery(id));
         return Ok(response);
     }
 

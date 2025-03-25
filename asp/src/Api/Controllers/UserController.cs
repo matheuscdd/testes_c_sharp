@@ -33,7 +33,7 @@ public class UserController: ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById([FromRoute] string id)
     {
-        var response = await _mediator.Send(new GetUserByIdQuery(id));
+        var response = await _mediator.Send(new GetByIdUserQuery{Id = id});
         return Ok(response);
     }
 

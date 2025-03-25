@@ -5,16 +5,16 @@ using MediatR;
 
 namespace Application.Contexts.Users.Queries.GetById;
 
-public class GetUserByIdHandler: IRequestHandler<GetUserByIdQuery, UserDto?>
+public class GetByIdUserHandler: IRequestHandler<GetByIdUserQuery, UserDto?>
 {
     private readonly IUserRepository _userRepository;
-    public GetUserByIdHandler(IUserRepository userRepository)
+    public GetByIdUserHandler(IUserRepository userRepository)
     {
         _userRepository = userRepository;
     }
 
     public async Task<UserDto?> Handle(
-        GetUserByIdQuery request,
+        GetByIdUserQuery request,
         CancellationToken cancellationToken
     )
     {
