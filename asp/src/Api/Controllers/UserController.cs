@@ -1,9 +1,11 @@
 using Application.Contexts.Users.Commands.Create;
 using Application.Contexts.Users.Commands.DeleteById;
+using Application.Contexts.Users.Commands.Login;
 using Application.Contexts.Users.Commands.Update;
 using Application.Contexts.Users.Queries.GetAll;
 using Application.Contexts.Users.Queries.GetById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -20,6 +22,7 @@ public class UserController: ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAll()
     {
         var response = await _mediator.Send(new GetAllUserQuery());
@@ -39,7 +42,7 @@ public class UserController: ControllerBase
     )
     {
         var response = await _mediator.Send(createUserCommand);
-        return Ok(response);
+        return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
     [HttpPut("{id}")]
@@ -58,6 +61,13 @@ public class UserController: ControllerBase
     {
         await _mediator.Send(new DeleteUserByIdCommand(id));
         return NoContent();
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginUserCommand loginUserCommand)
+    {
+        var response = await _mediator.Send(loginUserCommand);
+        return Ok(response);
     }
 }
 

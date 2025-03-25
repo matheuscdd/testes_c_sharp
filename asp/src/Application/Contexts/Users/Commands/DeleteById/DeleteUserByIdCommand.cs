@@ -10,7 +10,5 @@ public class DeleteUserByIdCommand: IRequest
         Id = id;
     }
 
-    public DeleteUserByIdCommand()
-    {
-    }
+    public DeleteUserByIdCommand() {}
 }

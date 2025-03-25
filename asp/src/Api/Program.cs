@@ -1,13 +1,18 @@
+using System.Diagnostics;
 using System.Net;
 using System.Text.Json.Serialization;
+using api.Services;
 using Application.Contexts.Users.Repositories;
 using Domain.Entities;
 using Domain.Exceptions;
+using Domain.Services;
 using Mapster;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Repository.Context;
 using Repository.Repositories.Users;
@@ -54,6 +59,46 @@ builder.Services.AddIdentity<User, IdentityRole>(options => {
     options.Password.RequiredLength = 12;
 }).AddEntityFrameworkStores<ApplicationDbContext>();
 
+// Configuração do JWT
+builder.Services.AddAuthentication(options => 
+    options.DefaultAuthenticateScheme = 
+    options.DefaultChallengeScheme = 
+    options.DefaultForbidScheme = 
+    options.DefaultSignInScheme =
+    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme
+).AddJwtBearer(options => 
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["JWT:Issuer"],
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["JWT:Audience"],
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"]!)
+        ),
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnChallenge = context =>
+        {
+            context.HandleResponse();
+
+            var problemDetails = new ProblemDetails
+            {
+                Title = "Unauthorized",
+                Status = StatusCodes.Status401Unauthorized,
+            };
+
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+            return context.Response.WriteAsJsonAsync(problemDetails);
+        }
+    };
+});
+
 // Adicionar o mapters que já configura os métodos de mapping Id = Id
 builder.Services.AddMapster();
 
@@ -94,6 +139,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 // Dependências a serem injetadas
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 

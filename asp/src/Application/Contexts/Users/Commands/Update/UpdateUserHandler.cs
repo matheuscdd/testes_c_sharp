@@ -20,7 +20,7 @@ public class UpdateUserHandler: IRequestHandler<UpdateUserCommand, UserDto>
         var entity = await _userRepository.GetByIdAsync(request.Id, cancellationToken);
         entity.SetEmail(request.Email);
         entity.SetUsername(request.UserName);
-        // entity = await _userRepository.UpdateAsync(entity, cancellationToken);
+        entity = await _userRepository.UpdateAsync(entity, cancellationToken);
         var dto = entity.Adapt<UserDto>();
         return dto;
     }

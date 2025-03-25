@@ -13,6 +13,13 @@ public class User : IdentityUser
     public List<Portfolio> Portfolios { get; set; } = [];
     protected User(){ }
 
+    public User(string username, string password)
+    {
+        validatePassword(password);
+        validateUserName(username);
+        SetUsername(username);
+    }
+
     public User(string username, string email, string password)
     {
         validatePassword(password);
@@ -24,11 +31,13 @@ public class User : IdentityUser
 
     public void SetUsername(string username)
     {
+        validateUserName(username);
         UserName = username;
     }
 
     public void SetEmail(string email)
     {
+        validateEmail(email);
         Email = email.ToLower();
     }
 
@@ -77,9 +86,7 @@ public class User : IdentityUser
         {
             throw new ValidationUserException($"{name} must have at least one non alphanumeric character");
         }
-            
     }
-
 
     private void validatePassword(string password)
     {
@@ -88,7 +95,6 @@ public class User : IdentityUser
         validateLength(password, name, 12, 150);
         validatePasswordFormat(password, name);
     }
-
     
     private void validateEmail(string email)
     {
