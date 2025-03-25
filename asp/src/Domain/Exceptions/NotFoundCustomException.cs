@@ -1,10 +1,10 @@
 using System.Net;
 
-namespace Domain.Exceptions.Users;
+namespace Domain.Exceptions;
 
-public class NotFoundUserException : BaseException
+public class NotFoundCustomException : BaseException
 {
-    public NotFoundUserException(string message = "User Not Found") 
+    public NotFoundCustomException(string message = "Not Found") 
         : base(
             message, 
             (int) HttpStatusCode.NotFound,

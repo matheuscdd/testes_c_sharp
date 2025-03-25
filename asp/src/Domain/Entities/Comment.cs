@@ -20,8 +20,36 @@ public class Comment: Entity
         string userId
     )
     {
-        Title = title;
-        Content = content;
+        validateTitle(title);
+        validateContent(content);
+        SetTitle(title);
+        SetContent(content);
         UserId = userId;
+    }
+
+     public void SetTitle(string? title)
+    {
+        validateTitle(title);
+        Title = title!;
+    }
+
+    public void SetContent(string? content)
+    {
+        validateContent(content);
+        Content = content!;
+    }
+
+    private void validateTitle(string? title)
+    {
+        const string name = nameof(Title);
+        validateEmpty(title, name);
+        validateLength(title!, name, 5, 10);
+    }
+
+    private void validateContent(string? content)
+    {
+        const string name = nameof(Content);
+        validateEmpty(content, name);
+        validateLength(content!, name, 5, 10);
     }
 }

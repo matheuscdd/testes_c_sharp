@@ -1,10 +1,10 @@
 using System.Net;
 
-namespace Domain.Exceptions.Users;
+namespace Domain.Exceptions;
 
-public class ValidationUserException : BaseException
+public class ValidationCustomException : BaseException
 {
-    public ValidationUserException(string message = "Validation Error") 
+    public ValidationCustomException(string message = "Validation Error") 
         : base(
             message, 
             (int) HttpStatusCode.BadRequest,

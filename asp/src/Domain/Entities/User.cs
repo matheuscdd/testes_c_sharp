@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
-using Domain.Exceptions.Users;
+using Domain.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Linq;
@@ -45,46 +45,46 @@ public class User : IdentityUser
     {
         if (value.IsNullOrEmpty()) 
         {
-            throw new ValidationUserException($"{name} cannot be empty");
+            throw new ValidationCustomException($"{name} cannot be empty");
         }
     }
 
     private void validateLength(string value, string name, int min, int max)
     {
         if (value.Length > max) {
-            throw new ValidationUserException($"{name} cannot be greater than {max} characters");
+            throw new ValidationCustomException($"{name} cannot be greater than {max} characters");
         } else if (value.Length < min) {
-            throw new ValidationUserException($"{name} cannot be smaller than {min} characters");
+            throw new ValidationCustomException($"{name} cannot be smaller than {min} characters");
         }
     }
 
     private void validateEmailFormat(string email, string name)
     {
         if (new EmailAddressAttribute().IsValid(email)) return;
-        throw new ValidationUserException($"{name} is invalid");
+        throw new ValidationCustomException($"{name} is invalid");
     }
 
     private void validatePasswordFormat(string password, string name)
     {
         if (!password.Any(char.IsNumber))
         {
-            throw new ValidationUserException($"{name} must have at least one digit");
+            throw new ValidationCustomException($"{name} must have at least one digit");
         }
         else if (!password.Any(char.IsLetter))
         {
-            throw new ValidationUserException($"{name} must have at least one letter");
+            throw new ValidationCustomException($"{name} must have at least one letter");
         }
         else if (!password.Any(char.IsUpper))
         {
-            throw new ValidationUserException($"{name} must have at least one uppercase letter");
+            throw new ValidationCustomException($"{name} must have at least one uppercase letter");
         }
         else if (!password.Any(char.IsLower))
         {
-            throw new ValidationUserException($"{name} must have at least one lowercase letter");
+            throw new ValidationCustomException($"{name} must have at least one lowercase letter");
         }
         else if (!password.Any(c => !char.IsLetterOrDigit(c)))
         {
-            throw new ValidationUserException($"{name} must have at least one non alphanumeric character");
+            throw new ValidationCustomException($"{name} must have at least one non alphanumeric character");
         }
     }
 

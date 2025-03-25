@@ -1,10 +1,10 @@
 using System.Net;
 
-namespace Domain.Exceptions.Users;
+namespace Domain.Exceptions;
 
-public class UnauthorizedUserException : BaseException
+public class UnauthorizedCustomException : BaseException
 {
-    public UnauthorizedUserException(string message = "Unauthorized") 
+    public UnauthorizedCustomException(string message = "Unauthorized") 
         : base(
             message, 
             (int) HttpStatusCode.Unauthorized,

@@ -1,10 +1,10 @@
 using System.Net;
 
-namespace Domain.Exceptions.Users;
+namespace Domain.Exceptions;
 
-public class ConflictUserException : BaseException
+public class ConflictCustomException : BaseException
 {
-    public ConflictUserException(string message = "Conflict") 
+    public ConflictCustomException(string message = "Conflict") 
         : base(
             message, 
             (int) HttpStatusCode.Conflict, 

@@ -2,12 +2,12 @@ using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
 namespace Repository.Context;
 
 public class ApplicationDbContext(DbContextOptions dbContextOptions) : IdentityDbContext<User>(dbContextOptions)
 {
+    public DbSet<Stock> Stocks { get; set; }
     public DbSet<User> User { get; set; }
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Portfolio> Portfolios { get; set; }
