@@ -29,7 +29,7 @@ public class User : IdentityUser
         SetEmail(email);
     }
 
-    public void SetUsername(string username)
+    public void SetUsername(string? username)
     {
         validateUserName(username);
         UserName = username;
@@ -41,7 +41,7 @@ public class User : IdentityUser
         Email = email.ToLower();
     }
 
-    private void validateEmpty(string value, string name)
+    private void validateEmpty(string? value, string name)
     {
         if (value.IsNullOrEmpty()) 
         {
@@ -88,26 +88,26 @@ public class User : IdentityUser
         }
     }
 
-    private void validatePassword(string password)
+    private void validatePassword(string? password)
     {
         const string name = "Password";
         validateEmpty(password, name);
-        validateLength(password, name, 12, 150);
-        validatePasswordFormat(password, name);
+        validateLength(password!, name, 12, 150);
+        validatePasswordFormat(password!, name);
     }
     
-    private void validateEmail(string email)
+    private void validateEmail(string? email)
     {
         const string name = nameof(Email);
         validateEmpty(email, name);
-        validateLength(email, name, 5, 100);
-        validateEmailFormat(email, name);
+        validateLength(email!, name, 5, 100);
+        validateEmailFormat(email!, name);
     }
 
-    private void validateUserName(string username)
+    private void validateUserName(string? username)
     {
         const string name = nameof(UserName);
         validateEmpty(username, name);
-        validateLength(username, name, 6, 30);
+        validateLength(username!, name, 6, 30);
     }
 }

@@ -41,6 +41,11 @@ public class UserRepository: IUserRepository
         return user;
     }
 
+    public async Task<bool> CheckIdExists(string id, CancellationToken cancellationToken = default)
+    {
+        return await _userManager.Users.AnyAsync(el => el.Id == id, cancellationToken);
+    }
+
     private async Task<User?> getUserAsync(string id, CancellationToken cancellationToken)
     {
         return await Task.Run(() => _userManager.FindByIdAsync(id), cancellationToken);
@@ -124,11 +129,6 @@ public class UserRepository: IUserRepository
         }
 
         return _tokenService.CreateToken(entity);
-    }
-
-    public Task<User?> GetByUserNameAsync(string username)
-    {
-        throw new NotImplementedException();
     }
 }
 

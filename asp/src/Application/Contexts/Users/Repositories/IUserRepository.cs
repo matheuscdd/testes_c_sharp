@@ -10,5 +10,6 @@ public interface IUserRepository
     Task<User> UpdateAsync(User entity, CancellationToken cancellationToken = default);
     Task<User> DeleteAsync(string id, CancellationToken cancellationToken = default);
     Task<User?> GetByUserNameAsync(string username, CancellationToken cancellationToken = default);
+    Task<bool> CheckIdExists(string id, CancellationToken cancellationToken = default);
     Task<string> Login(string username, string password, CancellationToken cancellationToken = default);
 }

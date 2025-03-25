@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Text.Json.Serialization;
 using api.Services;
+using Api.Middlewares;
 using Application.Contexts.Users.Repositories;
 using Domain.Entities;
 using Domain.Exceptions;
@@ -85,11 +86,14 @@ builder.Services.AddAuthentication(options =>
         OnChallenge = context =>
         {
             context.HandleResponse();
+            var traceId = Activity.Current?.Id ?? context.HttpContext.TraceIdentifier; 
 
             var problemDetails = new ProblemDetails
             {
+                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.2",
                 Title = "Unauthorized",
                 Status = StatusCodes.Status401Unauthorized,
+                Extensions = { { "traceId", traceId } }
             };
 
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
@@ -143,6 +147,9 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
+// Registra os middlewares
+app.UseMiddleware<TokenValidationMiddleware>();
+
 // Insere o swagger em desenvolvimento
 if (app.Environment.IsDevelopment())
 {
@@ -162,6 +169,9 @@ app.UseExceptionHandler(config =>
 {
     config.Run(async context => 
     {
+        // TODO depois testar com signoz
+        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+
         context.Response.ContentType = "application/json";
         var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
         if (exception is BaseException custom)
@@ -169,20 +179,27 @@ app.UseExceptionHandler(config =>
             context.Response.StatusCode = custom.StatusCode;
             var problemDetails = new ProblemDetails
             {
+                Type = custom.Type,
                 Title = custom.Message,
                 Status = custom.StatusCode,
+                Extensions = { { "traceId", custom.TraceId } }
             };
+            logger.LogError(exception, "TraceId: {TraceId} - Handle exception: {Message}", custom.TraceId, exception?.Message);
 
             await context.Response.WriteAsJsonAsync(problemDetails);
         }
         else
-        {
+        {            
+            var traceId = Activity.Current?.Id ?? "N/A"; 
             context.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
             var problemDetails = new ProblemDetails
             {
-                Title = "An error occurred while processing your request.",
+                Type = "https://tools.ietf.org/html/rfc9110#section-15.6.1",
+                Title = "An error occurred while processing your request",
                 Status = (int) HttpStatusCode.InternalServerError,
+                Extensions = { { "traceId", traceId } }
             };
+            logger.LogError(exception, "TraceId: {TraceId} - Unhandled exception: {Message}", traceId, exception?.Message);
 
             await context.Response.WriteAsJsonAsync(problemDetails);
         }

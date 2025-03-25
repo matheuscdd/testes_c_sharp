@@ -1,9 +1,11 @@
+using System.Security.Claims;
 using Application.Contexts.Users.Commands.Create;
-using Application.Contexts.Users.Commands.DeleteById;
+using Application.Contexts.Users.Commands.Delete;
 using Application.Contexts.Users.Commands.Login;
 using Application.Contexts.Users.Commands.Update;
 using Application.Contexts.Users.Queries.GetAll;
 using Application.Contexts.Users.Queries.GetById;
+using Domain.Exceptions.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -45,21 +47,23 @@ public class UserController: ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut]
+    [Authorize]
     public async Task<IActionResult> Update(
-        [FromRoute] string id,
         [FromBody] UpdateUserCommand updateUserCommand
     )
     {
-        updateUserCommand.Id = id;
+        updateUserCommand.Id = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
         var response = await _mediator.Send(updateUserCommand);
         return Ok(response);
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] string id)
+    [HttpDelete]
+    [Authorize]
+    public async Task<IActionResult> Delete()
     {
-        await _mediator.Send(new DeleteUserByIdCommand(id));
+        var id = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        await _mediator.Send(new DeleteUserCommand(id));
         return NoContent();
     }
 
