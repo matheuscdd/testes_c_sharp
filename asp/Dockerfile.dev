@@ -1,0 +1,9 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /app
+
+COPY . .
+
+RUN dotnet restore
+
+WORKDIR /app/src
+CMD [ "dotnet", "watch", "run", "--project", "Api" ]

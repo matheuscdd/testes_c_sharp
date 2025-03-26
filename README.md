@@ -51,7 +51,7 @@ dotnet ef migrations add init
 dotnet ef database update
 
 ## Aplica migrações pelo docker
-docker exec -it project-asp-migrater-1 sh -c "dotnet tool restore && dotnet ef database update --verbose"
+docker exec -it prod-migrator-1 sh -c "./.tools/dotnet-ef database update --project src/Repository --startup-project src/Api"
 
 # SQL Server
 docker run \
@@ -77,12 +77,12 @@ dos2unix script.sh
 
 # Docker
 ## Rodar migrações dev
-docker compose -f docker-compose.dev.yml exec -T migrater dotnet tool restore
-docker compose -f docker-compose.dev.yml exec -T migrater dotnet ef database update
+docker compose -f docker-compose.dev.yml exec -T migrator dotnet tool restore
+docker compose -f docker-compose.dev.yml exec -T migrator dotnet ef database update
 
 ## Rodar migrações prod
-docker compose -f docker-compose.prod.yml exec -T migrater dotnet tool restore
-docker compose -f docker-compose.prod.yml exec -T migrater dotnet ef database update
+docker compose -f docker-compose.prod.yml exec -T migrator dotnet tool restore
+docker compose -f docker-compose.prod.yml exec -T migrator dotnet ef database update
 
 # Criar Pasta com classes
 dotnet new classlib -n Application
@@ -95,9 +95,22 @@ dotnet ef migrations add Init -o Migrations --project Repository --startup-proje
 
 ## Executa migrações na raiz (src)
 dotnet ef database update --project Repository --startup-project Api
+dotnet ef database update --project src/Repository --startup-project src/Api
 
 ## Rodar (src)
 dotnet watch run --project Api
 
 ## Build (src)
 dotnet build Api
+
+# Criando uma solução
+Soluções é nome do gerenciador de projetos, aqui as dependências são quebradas em arquivos de projeto, .sln é o tipo de arquivo que vai centralizar as conexões entre os arquivos de dependências. A partir disso da pra dar build direto na pasta
+```
+dotnet new sln -n SolutionName
+```
+
+# Adicionando projetos a uma solução
+```
+dotnet sln SolutionName.sln add path/file1.csproj
+dotnet sln SolutionName.sln add path/file2.csproj
+```
