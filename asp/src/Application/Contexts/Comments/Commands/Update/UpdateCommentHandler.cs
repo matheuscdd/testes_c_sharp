@@ -1,6 +1,7 @@
 using Application.Contexts.Comments.Dtos;
 using Application.Contexts.Comments.Repositories;
 using Domain.Entities;
+using Domain.Exceptions;
 using Mapster;
 using MapsterMapper;
 using MediatR;
@@ -22,9 +23,15 @@ public class UpdateCommentHandler : IRequestHandler<UpdateCommentCommand, Commen
         CancellationToken cancellationToken
     )
     {
-        var entity = new Comment(request.Title, request.Content, request.UserId, request.StockId);
-        entity = await _commentRepository.UpdateAsync(request.Id, entity, cancellationToken);
-        var dto = entity.Adapt<CommentDto>();
+        var entityStorage = await _commentRepository.GetByIdAndUserAsync(request.Id, request.UserId, cancellationToken);
+        if (entityStorage == null)
+        {
+            throw new NotFoundCustomException("Comment not found");
+        }
+
+        var entityRequest = new Comment(request.Title, request.Content, request.UserId, request.StockId);
+        entityRequest = await _commentRepository.UpdateAsync(entityStorage, entityRequest, cancellationToken);
+        var dto = entityRequest.Adapt<CommentDto>();
         return dto;
     }
 }

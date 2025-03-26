@@ -1,6 +1,7 @@
 using Application.Contexts.Users.Dtos;
 using Application.Contexts.Users.Repositories;
 using Domain.Entities;
+using Domain.Exceptions;
 using MapsterMapper;
 using MediatR;
 
@@ -23,6 +24,10 @@ public class LoginUserHandler : IRequestHandler<LoginUserCommand, TokenDto>
     {
         var entity = new User(request.UserName, request.Password);
         var token = await _userRepository.Login(entity.UserName!, request.Password, cancellationToken);
+        if (token == null)
+        {
+            throw new UnauthorizedCustomException();
+        } 
         return new TokenDto(token);
     }
 }

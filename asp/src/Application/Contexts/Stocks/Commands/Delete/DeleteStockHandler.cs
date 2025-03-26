@@ -1,4 +1,5 @@
 using Application.Contexts.Stocks.Repositories;
+using Domain.Exceptions;
 using MediatR;
 
 namespace Application.Contexts.Stocks.Commands.Delete;
@@ -17,6 +18,11 @@ public class DeleteStockHandler: IRequestHandler<DeleteStockCommand>
         CancellationToken cancellationToken
     )
     {
-        await _stockRepository.DeleteAsync(request.Id, cancellationToken);
+        var entity = await _stockRepository.GetByIdCommentsAsync(request.Id, cancellationToken);
+        if (entity == null)
+        {
+            throw new NotFoundCustomException("Stock not found");
+        }
+        await _stockRepository.DeleteAsync(entity, cancellationToken);
     }
 }

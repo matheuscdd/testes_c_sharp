@@ -3,16 +3,15 @@ using Application.Contexts.Stocks.Repositories;
 using Domain.Entities;
 using Domain.Exceptions;
 using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Application.Contexts.Portfolios.Commands.Create;
 
-public class CreatePortfolioHandler: IRequestHandler<CreatePortfolioCommand>
+public class DeletePortfolioHandler: IRequestHandler<CreatePortfolioCommand>
 {
     private readonly IPortfolioRepository _portfolioRepository;
     private readonly IStockRepository _stockRepository;
 
-    public CreatePortfolioHandler(IPortfolioRepository portfolioRepository, IStockRepository stockRepository)
+    public DeletePortfolioHandler(IPortfolioRepository portfolioRepository, IStockRepository stockRepository)
     {
         _portfolioRepository = portfolioRepository;
         _stockRepository = stockRepository;
@@ -24,10 +23,16 @@ public class CreatePortfolioHandler: IRequestHandler<CreatePortfolioCommand>
     )
     {
         var stockExists = await _stockRepository.CheckIdExists(request.StockId);
-        if (!stockExists) {
+        if (!stockExists) 
+        {
             throw new NotFoundCustomException("Stock does not exist");
         }
-        var entity = new Portfolio(request.UserId, request.StockId);
-        await _portfolioRepository.CreateAsync(entity, cancellationToken);
+
+        var entity = await _portfolioRepository.GetByStockWithUserAsync(request.UserId, request.StockId, cancellationToken);
+        if (entity == null)
+        {
+            throw new NotFoundCustomException("User does not have this stock");
+        }
+        await _portfolioRepository.DeleteAsync(entity, cancellationToken);
     }
 }

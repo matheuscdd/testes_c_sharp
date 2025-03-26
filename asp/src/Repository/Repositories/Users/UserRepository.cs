@@ -1,7 +1,5 @@
-using Application.Contexts.Users.Dtos;
 using Application.Contexts.Users.Repositories;
 using Domain.Entities;
-using Domain.Exceptions;
 using Domain.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,37 +29,22 @@ public class UserRepository: IUserRepository
         return await _userManager.Users.ToListAsync();
     }
 
-    public async Task<User> GetByIdAsync(string id, CancellationToken cancellationToken = default)
-    {
-        var user = await getUserAsync(id, cancellationToken);
-        if (user == null)
-        {
-            throw new NotFoundCustomException($"{nameof(User)} not found");
-        }
-        return user;
-    }
-
     public async Task<bool> CheckIdExists(string id, CancellationToken cancellationToken = default)
     {
         return await _userManager.Users.AnyAsync(el => el.Id == id, cancellationToken);
     }
 
-    private async Task<User?> getUserAsync(string id, CancellationToken cancellationToken)
+    public async Task<User?> GetByIdAsync(string id, CancellationToken cancellationToken)
     {
         return await Task.Run(() => _userManager.FindByIdAsync(id), cancellationToken);
     }
 
-    public async Task<User> CreateAsync(
+    public async Task<(User?, string?)> CreateAsync(
         User entityRequest, 
         string password,
         CancellationToken cancellationToken = default
     )
     {
-        var usernameExists = await checkUserNameExists(entityRequest.UserName!);
-        if (usernameExists) {
-            throw new ConflictCustomException($"{nameof(entityRequest.UserName)} already exists");
-        }
-
         var queryResult = await Task.Run(() => _userManager.CreateAsync(entityRequest, password), cancellationToken);
 
         if (queryResult.Succeeded)
@@ -69,36 +52,27 @@ public class UserRepository: IUserRepository
                 var roleResult = await _userManager.AddToRoleAsync(entityRequest, "Common"); // Aqui é a role definida no context
                 if (roleResult.Succeeded)
                 {
-                    return entityRequest;
+                    return (entityRequest, null);
                 }
                 else
                 {
-                    throw new ValidationCustomException(string.Join(";", roleResult.Errors));
+                    return (null, string.Join(";", roleResult.Errors));
                 }
             } 
         else
         {
-            throw new ValidationCustomException(string.Join(";", queryResult.ToString()));
+            return (null, queryResult.ToString());
         }
     }
 
     public async Task<User> UpdateAsync(User entityRequest, CancellationToken cancellationToken = default)
     {
-        var usernameExists = await checkUserNameExists(entityRequest.UserName!);
-        if (usernameExists) {
-            throw new ConflictCustomException($"{nameof(entityRequest.UserName)} already exists");
-        }
         await _userManager.UpdateAsync(entityRequest);
         return entityRequest;
     } 
 
-    public async Task<User> DeleteAsync(string id, CancellationToken cancellationToken = default)
+    public async Task<User> DeleteAsync(User entity, CancellationToken cancellationToken = default)
     {
-        var entity = await getUserAsync(id, cancellationToken);
-        if (entity == null)
-        {
-            throw new NotFoundCustomException($"{nameof(User)} not found");
-        }
         await Task.Run(() => _userManager.DeleteAsync(entity), cancellationToken);
         return entity;
     }
@@ -108,23 +82,23 @@ public class UserRepository: IUserRepository
         return await _userManager.Users.FirstOrDefaultAsync(el => el.UserName == username, cancellationToken);
     }
 
-    private async Task<bool> checkUserNameExists(string username)
+    public async Task<bool> CheckUserNameExists(string username, CancellationToken cancellationToken = default)
     {
-        return await _userManager.Users.AnyAsync(el => el.UserName == username);
+        return await _userManager.Users.AnyAsync(el => el.UserName == username, cancellationToken);
     }
 
-    public async Task<string> Login(string username, string password, CancellationToken cancellationToken = default)
+    public async Task<string?> Login(string username, string password, CancellationToken cancellationToken = default)
     {
         var entity = await GetByUserNameAsync(username, cancellationToken);
         if (entity == null)
         {
-            throw new UnauthorizedCustomException();
+            return null;
         }
 
         var result = await _signInManager.CheckPasswordSignInAsync(entity, password, false);
         if (!result.Succeeded)
         {
-            throw new UnauthorizedCustomException();
+            return null;
         }
 
         return _tokenService.CreateToken(entity);

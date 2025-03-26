@@ -1,6 +1,7 @@
 using Application.Contexts.Stocks.Dtos;
 using Application.Contexts.Stocks.Repositories;
 using Domain.Entities;
+using Domain.Exceptions;
 using Mapster;
 using MapsterMapper;
 using MediatR;
@@ -22,7 +23,13 @@ public class UpdateStockHandler : IRequestHandler<UpdateStockCommand, StockDto>
         CancellationToken cancellationToken
     )
     {
-        var entity = new Stock(
+        var entityStorage = await _stockRepository.GetByIdCommentsAsync(request.Id, cancellationToken);
+        if (entityStorage == null)
+        {
+            throw new NotFoundCustomException("Stock not found");
+        }
+
+        var entityRequest = new Stock(
             request.Symbol,
             request.CompanyName,
             request.Purchase,
@@ -30,8 +37,9 @@ public class UpdateStockHandler : IRequestHandler<UpdateStockCommand, StockDto>
             request.Industry,
             request.MarketCap
         );
-        entity = await _stockRepository.UpdateAsync(request.Id, entity, cancellationToken);
-        var dto = entity.Adapt<StockDto>();
+        
+        entityRequest = await _stockRepository.UpdateAsync(entityStorage, entityRequest, cancellationToken);
+        var dto = entityRequest.Adapt<StockDto>();
         return dto;
     }
 }

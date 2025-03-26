@@ -17,18 +17,12 @@ public class CommentRepository(ApplicationDbContext context) : ICommentRepositor
         return entityRequest;
     }
 
-    public async Task<Comment?> DeleteAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<Comment?> DeleteAsync(Comment entity, CancellationToken cancellationToken = default)
     {
-        var commentStorage = await _context.Comments.FindAsync(id, cancellationToken);
-        if (commentStorage == null) 
-        {
-            return null;
-        }
-
-        _context.Comments.Remove(commentStorage);
+        _context.Comments.Remove(entity);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return commentStorage;
+        return entity;
     }
 
     public async Task<List<Comment>> GetAllAsync(CancellationToken cancellationToken = default)
@@ -41,19 +35,18 @@ public class CommentRepository(ApplicationDbContext context) : ICommentRepositor
         return await _context.Comments.Include(el => el.User).FirstOrDefaultAsync(el => el.Id == id, cancellationToken);
     }
 
-    public async Task<Comment?> UpdateAsync(int id, Comment entityRequest, CancellationToken cancellationToken = default)
+    public async Task<Comment?> GetByIdAndUserAsync(int id, string userId, CancellationToken cancellationToken = default)
     {
-        var commentStorage = await _context.Comments.Include(el => el.User).FirstOrDefaultAsync(el => el.Id == id, cancellationToken);
-        if (commentStorage == null) 
-        {
-            return null;
-        }
+        return await _context.Comments.Include(el => el.User).FirstOrDefaultAsync(el => el.Id == id && el.UserId == userId, cancellationToken);
+    }
 
-        commentStorage.SetTitle(entityRequest.Title);
-        commentStorage.SetContent(entityRequest.Content);
+    public async Task<Comment?> UpdateAsync(Comment entityStorage, Comment entityRequest, CancellationToken cancellationToken = default)
+    {
+        entityStorage.SetTitle(entityRequest.Title);
+        entityStorage.SetContent(entityRequest.Content);
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return commentStorage;
+        return entityStorage;
     }
 }

@@ -38,18 +38,12 @@ public class StockRepository: IStockRepository
         return entityRequest;
     }
 
-    public async Task<Stock?> DeleteAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<Stock?> DeleteAsync(Stock entity, CancellationToken cancellationToken = default)
     {
-        var stockStorage = await _context.Stocks.FindAsync(id, cancellationToken);
-        if (stockStorage == null) 
-        {
-            return null;
-        }
-
-        _context.Stocks.Remove(stockStorage);
+        _context.Stocks.Remove(entity);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return stockStorage;
+        return entity;
     }
 
     public async Task<List<Stock>> GetAllAsync(GetAllStockQueryParams queryParams, CancellationToken cancellationToken = default)
@@ -81,7 +75,7 @@ public class StockRepository: IStockRepository
             .FirstOrDefaultAsync(el => el.Id == id, cancellationToken);
     }
 
-    public async Task<Stock?> GetByIdWithoutCommentsAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<Stock?> GetByIdCommentsAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _context.Stocks.FindAsync(id, cancellationToken);
     }
@@ -91,26 +85,17 @@ public class StockRepository: IStockRepository
         return await _context.Stocks.AnyAsync(el => el.Id == id, cancellationToken);
     }
 
-    public async Task<Stock?> UpdateAsync(int id, Stock entityRequest, CancellationToken cancellationToken = default)
+    public async Task<Stock?> UpdateAsync(Stock entityStorage, Stock entityRequest, CancellationToken cancellationToken = default)
     {
-        var stockStorage = await _context.Stocks
-            .Include(el => el.Comments)
-            .ThenInclude(el => el.User)
-            .FirstOrDefaultAsync(el => el.Id == id, cancellationToken);
-        if (stockStorage == null) 
-        {
-            return null;
-        }
-        
-        stockStorage.SetSymbol(entityRequest.Symbol);
-        stockStorage.SetCompanyName(entityRequest.CompanyName);
-        stockStorage.SetPurchase(entityRequest.Purchase);
-        stockStorage.SetLastDiv(entityRequest.LastDiv);
-        stockStorage.SetIndustry(entityRequest.Industry);
-        stockStorage.SetMarketCap(entityRequest.MarketCap);
+        entityStorage.SetSymbol(entityRequest.Symbol);
+        entityStorage.SetCompanyName(entityRequest.CompanyName);
+        entityStorage.SetPurchase(entityRequest.Purchase);
+        entityStorage.SetLastDiv(entityRequest.LastDiv);
+        entityStorage.SetIndustry(entityRequest.Industry);
+        entityStorage.SetMarketCap(entityRequest.MarketCap);
 
         await _context.SaveChangesAsync(cancellationToken);
 
-        return stockStorage;
+        return entityStorage;
     }
 }
