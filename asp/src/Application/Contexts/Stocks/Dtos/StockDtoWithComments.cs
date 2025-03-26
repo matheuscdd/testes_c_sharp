@@ -1,6 +1,8 @@
+using Application.Contexts.Comments.Dtos;
+
 namespace Application.Contexts.Stocks.Dtos;
 
-public class StockDto
+public class StockDtoWithComments
 {
     public int Id { get; set; }
     public string Symbol { get; set; }
@@ -9,10 +11,10 @@ public class StockDto
     public decimal LastDiv { get; set; }
     public string Industry { get; set; }
     public long MarketCap { get; set; }
+    public List<CommentDto> Comments { get; set; } = [];
 
-
-    public StockDto() {}
-    public StockDto(
+    public StockDtoWithComments() {}
+    public StockDtoWithComments(
         string symbol, 
         string companyName, 
         decimal purchase, 

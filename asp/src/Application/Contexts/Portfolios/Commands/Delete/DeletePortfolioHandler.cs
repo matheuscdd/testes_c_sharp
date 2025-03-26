@@ -1,12 +1,11 @@
 using Application.Contexts.Portfolios.Repositories;
 using Application.Contexts.Stocks.Repositories;
-using Domain.Entities;
 using Domain.Exceptions;
 using MediatR;
 
-namespace Application.Contexts.Portfolios.Commands.Create;
+namespace Application.Contexts.Portfolios.Commands.Delete;
 
-public class DeletePortfolioHandler: IRequestHandler<CreatePortfolioCommand>
+public class DeletePortfolioHandler: IRequestHandler<DeletePortfolioCommand>
 {
     private readonly IPortfolioRepository _portfolioRepository;
     private readonly IStockRepository _stockRepository;
@@ -18,14 +17,14 @@ public class DeletePortfolioHandler: IRequestHandler<CreatePortfolioCommand>
     }
 
     public async Task Handle(
-        CreatePortfolioCommand request,
+        DeletePortfolioCommand request,
         CancellationToken cancellationToken
     )
     {
         var stockExists = await _stockRepository.CheckIdExists(request.StockId);
         if (!stockExists) 
         {
-            throw new NotFoundCustomException("Stock does not exist");
+            throw new NotFoundCustomException("Stock not found");
         }
 
         var entity = await _portfolioRepository.GetByStockWithUserAsync(request.UserId, request.StockId, cancellationToken);

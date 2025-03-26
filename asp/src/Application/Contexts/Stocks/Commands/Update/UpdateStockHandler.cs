@@ -23,7 +23,7 @@ public class UpdateStockHandler : IRequestHandler<UpdateStockCommand, StockDto>
         CancellationToken cancellationToken
     )
     {
-        var entityStorage = await _stockRepository.GetByIdCommentsAsync(request.Id, cancellationToken);
+        var entityStorage = await _stockRepository.GetByIdAsync(request.Id, cancellationToken);
         if (entityStorage == null)
         {
             throw new NotFoundCustomException("Stock not found");

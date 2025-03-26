@@ -56,12 +56,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.baseURL }}/api/stocks/3"
+      - url: "{{ _.baseURL }}/api/stocks/1"
         name: find
         meta:
           id: req_82fe944bbd1a41d88065aa38681b10cf
           created: 1742296754931
-          modified: 1742586812855
+          modified: 1743000919500
           isPrivate: false
           sortKey: -1742296766954
         method: GET
@@ -84,7 +84,7 @@ collection:
         meta:
           id: req_8bbd72ea0e844f2b93501b0cf574f37e
           created: 1742304249452
-          modified: 1742586822370
+          modified: 1742977562688
           isPrivate: false
           sortKey: -1742296766904
         method: POST
@@ -93,10 +93,10 @@ collection:
           text: |-
             {
             	"symbol": "{% faker 'randomHexColor' %}",
-            	"companyName": "{% faker 'randomLoremWord' %}123",
+            	"companyName": "{% faker 'randomLoremWord' %}sss",
             	"purchase": 5,
             	"lastDiv": 1,
-            	"industry": "Food",
+            	"industry": "Foods",
             	"marketCap": 99
             }
         headers:
@@ -120,7 +120,7 @@ collection:
         meta:
           id: req_468e8e6be3d943b2a57afabe9405ddd3
           created: 1742309780677
-          modified: 1742586826528
+          modified: 1743000976376
           isPrivate: false
           sortKey: -1742296766879
         method: PUT
@@ -129,10 +129,10 @@ collection:
           text: |-
             {
             	"symbol": "{% faker 'randomHexColor' %}",
-            	"companyName": "sadasdad",
-            	"purchase": 12121,
-            	"lastDiv": 3,
-            	"industry": "Food",
+            	"companyName": "rollbs",
+            	"purchase": 666,
+            	"lastDiv": 1,
+            	"industry": "{% faker 'randomLoremWord' %}",
             	"marketCap": {% faker 'timestamp' %}
             }
         headers:
@@ -151,12 +151,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.baseURL }}/api/stocks/1"
+      - url: "{{ _.baseURL }}/api/stocks/"
         name: del
         meta:
           id: req_eed68e9a31e74f099e636d19a37552d4
           created: 1742310077698
-          modified: 1742586817677
+          modified: 1743000296455
           isPrivate: false
           sortKey: -1742296766929
         method: DELETE
@@ -204,12 +204,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.baseURL }}/api/comments/2"
+      - url: "{{ _.baseURL }}/api/comments/1"
         name: find
         meta:
           id: req_d0163a05e56a467da591c324e8837172
           created: 1742329627961
-          modified: 1742586791948
+          modified: 1743000522220
           isPrivate: false
           sortKey: -1742313039120
         method: GET
@@ -227,12 +227,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.baseURL }}/api/comments/2"
+      - url: "{{ _.baseURL }}/api/comments/1"
         name: create
         meta:
           id: req_42f6ce3b9b0348babf0dbe8a98d6d070
           created: 1742376224263
-          modified: 1742586803332
+          modified: 1742998057946
           isPrivate: false
           sortKey: -1742304903037
         method: POST
@@ -260,12 +260,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.baseURL }}/api/comments/3"
+      - url: "{{ _.baseURL }}/api/comments/2"
         name: update
         meta:
           id: req_d3905da28274453ea6013fa6fd88c6f4
           created: 1742378732388
-          modified: 1742586808312
+          modified: 1743000901485
           isPrivate: false
           sortKey: -1742300834995.5
         method: PUT
@@ -292,12 +292,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.baseURL }}/api/comments/2"
+      - url: "{{ _.baseURL }}/api/comments/4"
         name: del
         meta:
           id: req_a7be11c22cce4163b0f61178b8cd267d
           created: 1742379142499
-          modified: 1742586797854
+          modified: 1743000704767
           isPrivate: false
           sortKey: -1742308971078.5
         method: DELETE
@@ -327,7 +327,7 @@ collection:
         meta:
           id: req_fe67215df60a47909e4295c27425d634
           created: 1742404861746
-          modified: 1742586736934
+          modified: 1743000859092
           isPrivate: false
           sortKey: -1742404865590
         method: POST
@@ -335,10 +335,9 @@ collection:
           mimeType: application/json
           text: |-
             {
-
-            	"username": "{% faker 'randomUserName' %}",
-            	"email": "{% faker 'randomEmail' %}",
-            	"password": "{% faker 'randomPassword' %}1eV$"
+            	"username": "bobert",
+            	"password": "aUbcdefghis1ajjR#das",
+            	"email": "{% faker 'randomEmail' %}"
             }
         headers:
           - name: Content-Type
@@ -353,12 +352,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.baseURL }}/api/users/6a934684-0526-4a64-8961-ebbebb2680ab"
+      - url: "{{ _.baseURL }}/api/users/27c293b3-ba87-446e-98e5-f069a8ced7e3"
         name: find
         meta:
           id: req_af86d986fbf64b74b82d00e2d12e4991
           created: 1742415337931
-          modified: 1742586775664
+          modified: 1742977493188
           isPrivate: false
           sortKey: -1742367088438
         method: GET
@@ -368,6 +367,7 @@ collection:
         authentication:
           type: bearer
           token: "{{ _.token }}"
+          disabled: true
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -381,7 +381,7 @@ collection:
         meta:
           id: req_24af3a2cd4e246a685ee555c7b5cdaf2
           created: 1742415475047
-          modified: 1742586781850
+          modified: 1742866898645
           isPrivate: false
           sortKey: -1742348199862
         method: GET
@@ -405,7 +405,7 @@ collection:
         meta:
           id: req_f064feea8dbd4b99a422a856d628c5b9
           created: 1742421118759
-          modified: 1742586768979
+          modified: 1743000863987
           isPrivate: false
           sortKey: -1742385977014
         method: POST
@@ -413,15 +413,70 @@ collection:
           mimeType: application/json
           text: |-
             {
-
-            	"username": "willie.damore",
-            	"password": "HC9NjoV79NFRA_J1eV$"
+            	"username": "mob.clays2d",
+            	"password": "aUbcdefghis1ajjR#das"
             }
         headers:
           - name: Content-Type
             value: application/json
           - name: User-Agent
             value: insomnia/8.6.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/users"
+        name: update
+        meta:
+          id: req_ce85b634e6c14560b9a888264bad9aea
+          created: 1742815079205
+          modified: 1742894916016
+          isPrivate: false
+          sortKey: -1742395421302
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"username": "{% faker 'randomUserName' %}",
+            	"email": "{% faker 'randomEmail' %}"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/users"
+        name: del
+        meta:
+          id: req_4197de72d1724ffaabb141eabe6722dd
+          created: 1742825940443
+          modified: 1742895097448
+          isPrivate: false
+          sortKey: -1742357644150
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -442,7 +497,7 @@ collection:
         meta:
           id: req_877087e28b7e42c38defad08bf3aadd0
           created: 1742476650711
-          modified: 1742586746893
+          modified: 1742999100268
           isPrivate: false
           sortKey: -1742476653075
         method: GET
@@ -460,12 +515,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.baseURL }}/api/portfolios/3"
+      - url: "{{ _.baseURL }}/api/portfolios/1"
         name: create
         meta:
           id: req_cb0fc37b684c493eb121c3232205eae6
           created: 1742493221770
-          modified: 1742586754817
+          modified: 1742999689576
           isPrivate: false
           sortKey: -1742440759332.5
         method: POST
@@ -483,12 +538,12 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.baseURL }}/api/portfolios/3"
+      - url: "{{ _.baseURL }}/api/portfolios/0"
         name: delete
         meta:
           id: req_5341270d1f5f4932a37a8b77be0fd2af
           created: 1742495387347
-          modified: 1742586762911
+          modified: 1742999625395
           isPrivate: false
           sortKey: -1742422812461.25
         method: DELETE
@@ -517,9 +572,9 @@ environments:
   meta:
     id: env_99d30891da4bdcebc63947a8fc17f076de878684
     created: 1720222674806
-    modified: 1742586725566
+    modified: 1742814000682
     isPrivate: false
   data:
     token: "{% response 'body', 'req_f064feea8dbd4b99a422a856d628c5b9',
       'b64::JC50b2tlbg==::46b', 'never', 60 %}"
-    baseURL: http://localhost:8080
+    baseURL: http://localhost:5154

@@ -18,7 +18,7 @@ public class DeleteStockHandler: IRequestHandler<DeleteStockCommand>
         CancellationToken cancellationToken
     )
     {
-        var entity = await _stockRepository.GetByIdCommentsAsync(request.Id, cancellationToken);
+        var entity = await _stockRepository.GetByIdAsync(request.Id, cancellationToken);
         if (entity == null)
         {
             throw new NotFoundCustomException("Stock not found");

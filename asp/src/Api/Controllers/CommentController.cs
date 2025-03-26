@@ -36,14 +36,16 @@ public class CommentController: ControllerBase
         return Ok(response);
     }
 
-    [HttpPost]
+    [HttpPost("{stockId:int}")]
     [Authorize]
     public async Task<IActionResult> Create(
+        [FromRoute] int stockId,
         [FromBody] CreateCommentCommand createCommentCommand
     )
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
         createCommentCommand.UserId = userId;
+        createCommentCommand.StockId = stockId;
         var response = await _mediator.Send(createCommentCommand);
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }

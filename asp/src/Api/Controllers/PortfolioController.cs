@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Application.Contexts.Portfolios.Commands.Create;
+using Application.Contexts.Portfolios.Commands.Delete;
 using Application.Contexts.Portfolios.Queries.GetUserPortfolio;
 
 using MediatR;

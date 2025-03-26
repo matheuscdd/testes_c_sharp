@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Contexts.Stocks.Queries.GetAll;
 
-public class GetAllStockHandler: IRequestHandler<GetAllStockQuery, IReadOnlyCollection<StockDto>>
+public class GetAllStockHandler: IRequestHandler<GetAllStockQuery, IReadOnlyCollection<StockDtoWithComments>>
 {
     private readonly IStockRepository _stockRepository;
     public GetAllStockHandler(IStockRepository stockRepository)
@@ -13,14 +13,14 @@ public class GetAllStockHandler: IRequestHandler<GetAllStockQuery, IReadOnlyColl
         _stockRepository = stockRepository;
     }
 
-    public async Task<IReadOnlyCollection<StockDto>> Handle(
+    public async Task<IReadOnlyCollection<StockDtoWithComments>> Handle(
         GetAllStockQuery request, CancellationToken cancellationToken
     )
     {
         // TODO tentar usar mapsters
         var queryParams = new GetAllStockQueryParams(request.Symbol, request.CompanyName, request.SortBy, request.IsDescending, request.PageNumber, request.PageSize);
         var entities = await _stockRepository.GetAllAsync(queryParams, cancellationToken);
-        var dtos = entities.Adapt<IReadOnlyCollection<StockDto>>();
+        var dtos = entities.Adapt<IReadOnlyCollection<StockDtoWithComments>>();
         return dtos;
     }
 }

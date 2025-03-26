@@ -13,7 +13,8 @@ public class UpdateCommentHandler : IRequestHandler<UpdateCommentCommand, Commen
     private readonly ICommentRepository _commentRepository;
     private readonly IMapper _mapper;
 
-    public UpdateCommentHandler(ICommentRepository commentRepository)
+    public UpdateCommentHandler(ICommentRepository commentRepository
+    )
     {
         _commentRepository = commentRepository;
     }
@@ -29,7 +30,7 @@ public class UpdateCommentHandler : IRequestHandler<UpdateCommentCommand, Commen
             throw new NotFoundCustomException("Comment not found");
         }
 
-        var entityRequest = new Comment(request.Title, request.Content, request.UserId, request.StockId);
+        var entityRequest = new Comment(request.Title, request.Content, entityStorage.UserId, entityStorage.StockId);
         entityRequest = await _commentRepository.UpdateAsync(entityStorage, entityRequest, cancellationToken);
         var dto = entityRequest.Adapt<CommentDto>();
         return dto;

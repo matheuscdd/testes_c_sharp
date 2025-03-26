@@ -46,13 +46,13 @@ public class Comment: Entity
     {
         const string name = nameof(Title);
         validateEmpty(title, name);
-        validateLength(title!, name, 5, 10);
+        validateLength(title!, name, 5, 48);
     }
 
     private void validateContent(string? content)
     {
         const string name = nameof(Content);
         validateEmpty(content, name);
-        validateLength(content!, name, 5, 10);
+        validateLength(content!, name, 5, 512);
     }
 }

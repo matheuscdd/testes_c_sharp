@@ -7,10 +7,12 @@ using Application.Contexts.Comments.Repositories;
 using Application.Contexts.Portfolios.Repositories;
 using Application.Contexts.Stocks.Repositories;
 using Application.Contexts.Users.Repositories;
+using Application.Mappings;
 using Domain.Entities;
 using Domain.Exceptions;
 using Domain.Services;
 using Mapster;
+using MapsterMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
@@ -147,12 +149,20 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
 );
 
+
+// Configuração do mapster
+var config = TypeAdapterConfig.GlobalSettings;
+config.Scan(typeof(CommentMappingConfig).Assembly);
+builder.Services.AddSingleton(config);
+builder.Services.AddScoped<IMapper, ServiceMapper>();
+
 // Dependências a serem injetadas
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
+
 
 var app = builder.Build();
 
@@ -193,7 +203,7 @@ app.UseExceptionHandler(config =>
                 Status = custom.StatusCode,
                 Extensions = { { "traceId", custom.TraceId } }
             };
-            logger.LogError(exception, "TraceId: {TraceId} - Handle exception: {Message}", custom.TraceId, exception?.Message);
+            logger.LogError(exception, "TraceId: {TraceId} -> Handle exception: {Message}", custom.TraceId, exception?.Message);
 
             await context.Response.WriteAsJsonAsync(problemDetails);
         }
@@ -208,7 +218,7 @@ app.UseExceptionHandler(config =>
                 Status = (int) HttpStatusCode.InternalServerError,
                 Extensions = { { "traceId", traceId } }
             };
-            logger.LogError(exception, "TraceId: {TraceId} - Unhandled exception: {Message}", traceId, exception?.Message);
+            logger.LogError(exception, "TraceId: {TraceId} -> Unhandled exception: {Message}", traceId, exception?.Message);
 
             await context.Response.WriteAsJsonAsync(problemDetails);
         }

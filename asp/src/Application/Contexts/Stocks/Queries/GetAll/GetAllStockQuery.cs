@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Contexts.Stocks.Queries.GetAll;
 
-public class GetAllStockQuery: IRequest<IReadOnlyCollection<StockDto>>
+public class GetAllStockQuery: IRequest<IReadOnlyCollection<StockDtoWithComments>>
 {
     public string? Symbol { get; set; } = null;
     public string? CompanyName { get; set; } = null;

@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Contexts.Portfolios.Queries.GetUserPortfolio;
 
-public class GetUserPortfolioHandler: IRequestHandler<GetUserPortfolioQuery, IReadOnlyCollection<StockDto>>
+public class GetUserPortfolioHandler: IRequestHandler<GetUserPortfolioQuery, IReadOnlyCollection<StockDtoWithComments>>
 {
     private readonly IPortfolioRepository _portfolioRepository;
     public GetUserPortfolioHandler(IPortfolioRepository portfolioRepository)
@@ -14,14 +14,14 @@ public class GetUserPortfolioHandler: IRequestHandler<GetUserPortfolioQuery, IRe
         _portfolioRepository = portfolioRepository;
     }
 
-    public async Task<IReadOnlyCollection<StockDto>> Handle(
+    public async Task<IReadOnlyCollection<StockDtoWithComments>> Handle(
         GetUserPortfolioQuery request,
         CancellationToken cancellationToken
     )
     {
         // TODO - depois tentar fazer tratativa para ocultar comentários
         var entities = await _portfolioRepository.GetUserPortfolioAsync(request.UserId,  cancellationToken);
-        var dtos = entities.Adapt<IReadOnlyCollection<StockDto>>();
+        var dtos = entities.Adapt<IReadOnlyCollection<StockDtoWithComments>>();
         return dtos;
     }
 }

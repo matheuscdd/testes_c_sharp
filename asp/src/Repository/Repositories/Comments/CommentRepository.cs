@@ -37,7 +37,7 @@ public class CommentRepository(ApplicationDbContext context) : ICommentRepositor
 
     public async Task<Comment?> GetByIdAndUserAsync(int id, string userId, CancellationToken cancellationToken = default)
     {
-        return await _context.Comments.Include(el => el.User).FirstOrDefaultAsync(el => el.Id == id && el.UserId == userId, cancellationToken);
+        return await _context.Comments.FirstOrDefaultAsync(el => el.Id == id && el.UserId == userId, cancellationToken);
     }
 
     public async Task<Comment?> UpdateAsync(Comment entityStorage, Comment entityRequest, CancellationToken cancellationToken = default)

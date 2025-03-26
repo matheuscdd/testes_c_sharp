@@ -1,5 +1,6 @@
 using Application.Contexts.Comments.Dtos;
 using Application.Contexts.Comments.Repositories;
+using Domain.Exceptions;
 using Mapster;
 using MediatR;
 
@@ -19,6 +20,10 @@ public class GetByIdCommentHandler: IRequestHandler<GetByIdCommentQuery, Comment
     )
     {
         var entity = await _commentRepository.GetByIdAsync(request.Id,  cancellationToken);
+        if (entity == null)
+        {
+            throw new NotFoundCustomException("Comment not found");
+        }
         var dto = entity.Adapt<CommentDto>();
         return dto;
     }

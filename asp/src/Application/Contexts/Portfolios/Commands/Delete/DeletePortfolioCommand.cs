@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Application.Contexts.Portfolios.Commands.Create;
+namespace Application.Contexts.Portfolios.Commands.Delete;
 
 public class DeletePortfolioCommand: IRequest
 {

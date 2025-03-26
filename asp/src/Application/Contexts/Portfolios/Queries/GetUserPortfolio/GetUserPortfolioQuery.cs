@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Application.Contexts.Portfolios.Queries.GetUserPortfolio;
 
-public class GetUserPortfolioQuery: IRequest<IReadOnlyCollection<StockDto>>
+public class GetUserPortfolioQuery: IRequest<IReadOnlyCollection<StockDtoWithComments>>
 {
     public required string UserId { get; set; }
     public GetUserPortfolioQuery() {}

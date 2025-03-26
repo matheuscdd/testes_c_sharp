@@ -75,7 +75,7 @@ public class StockRepository: IStockRepository
             .FirstOrDefaultAsync(el => el.Id == id, cancellationToken);
     }
 
-    public async Task<Stock?> GetByIdCommentsAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<Stock?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _context.Stocks.FindAsync(id, cancellationToken);
     }
