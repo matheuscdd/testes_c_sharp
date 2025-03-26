@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using Application.Contexts.Stocks.Commands.Create;
+using Application.Contexts.Stocks.Commands.Delete;
 using Application.Contexts.Stocks.Commands.Update;
 using Application.Contexts.Stocks.Queries.GetAll;
 using Application.Contexts.Stocks.Queries.GetById;
@@ -12,15 +14,17 @@ namespace Api.Controllers;
 [Route("api/stocks")]
 public class StockController: ControllerBase
 {
+    private readonly ILogger<StockController> _logger;
     private readonly IMediator _mediator;
 
-    public StockController(IMediator mediator)
+    public StockController(ILogger<StockController> logger, IMediator mediator)
     {
+        _logger = logger;
         _mediator = mediator;
     }
 
     [HttpGet]
-    [Authorize] // TODO talvez não funcione pois ele não tem as chaves direto
+    [Authorize]
     public async Task<IActionResult> GetAll(
         [FromQuery] GetAllStockQuery getAllStockQuery
     )
@@ -42,7 +46,9 @@ public class StockController: ControllerBase
         [FromBody] CreateStockCommand createStockCommand
     )
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
         var response = await _mediator.Send(createStockCommand);
+        _logger.LogInformation($"Stock Created - UserId: {userId}");
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
@@ -53,8 +59,20 @@ public class StockController: ControllerBase
         [FromBody] UpdateStockCommand updateStockCommand
     )
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
         updateStockCommand.Id = id;
         var response = await _mediator.Send(updateStockCommand);
+        _logger.LogInformation($"Stock {id} Updated - UserId: {userId}");
         return Ok(response);
+    }
+
+    [HttpDelete("{id:int}")]
+    [Authorize]
+    public async Task<IActionResult> Delete([FromRoute] int id)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        await _mediator.Send(new DeleteStockCommand(id));
+        _logger.LogInformation($"Stock {id} Deleted - UserId: {userId}");
+        return NoContent();
     }
 }

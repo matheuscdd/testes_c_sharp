@@ -13,10 +13,13 @@ namespace Api.Controllers;
 [Route("api/portfolios")]
 public class PortfolioController: ControllerBase
 {
+    private readonly ILogger<PortfolioController> _logger;
     private readonly IMediator _mediator;
 
-    public PortfolioController(IMediator mediator)
+
+    public PortfolioController(ILogger<PortfolioController> logger, IMediator mediator)
     {
+        _logger = logger;
         _mediator = mediator;
     }
 
@@ -37,6 +40,7 @@ public class PortfolioController: ControllerBase
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
         await _mediator.Send(new CreatePortfolioCommand{UserId = userId, StockId = stockId});
+        _logger.LogInformation($"Portfolio Created - UserId: {userId}");
         return NoContent();
     }
 
@@ -48,6 +52,7 @@ public class PortfolioController: ControllerBase
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
         await _mediator.Send(new DeletePortfolioCommand{UserId = userId, StockId = stockId});
+        _logger.LogInformation($"Portfolio {stockId} Deleted - UserId: {userId}");
         return NoContent();
     }
 }

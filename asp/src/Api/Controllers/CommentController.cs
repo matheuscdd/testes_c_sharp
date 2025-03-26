@@ -14,10 +14,12 @@ namespace Api.Controllers;
 [Route("api/comments")]
 public class CommentController: ControllerBase
 {
+    private readonly ILogger<CommentController> _logger;
     private readonly IMediator _mediator;
 
-    public CommentController(IMediator mediator)
+    public CommentController(ILogger<CommentController> logger,  IMediator mediator)
     {
+        _logger = logger;
         _mediator = mediator;
     }
 
@@ -47,6 +49,7 @@ public class CommentController: ControllerBase
         createCommentCommand.UserId = userId;
         createCommentCommand.StockId = stockId;
         var response = await _mediator.Send(createCommentCommand);
+        _logger.LogInformation($"Comment Created - UserId: {userId}");
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
@@ -61,6 +64,7 @@ public class CommentController: ControllerBase
         updateCommentCommand.UserId = userId;
         updateCommentCommand.Id = id;
         var response = await _mediator.Send(updateCommentCommand);
+        _logger.LogInformation($"Comment {id} Updated - UserId: {userId}");
         return Ok(response);
     }
 
@@ -72,6 +76,7 @@ public class CommentController: ControllerBase
     {
         var userId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
         await _mediator.Send(new DeleteCommentCommand(id, userId!));
+        _logger.LogInformation($"Comment {id} Deleted - UserId: {userId}");
         return NoContent();
     }
 }

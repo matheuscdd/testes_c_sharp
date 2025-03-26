@@ -5,5 +5,4 @@ COPY . .
 
 RUN dotnet restore
 
-WORKDIR /app/src
-CMD [ "dotnet", "watch", "run", "--project", "Api" ]
+CMD [ "dotnet", "watch", "run", "--project", "src/Api" ]

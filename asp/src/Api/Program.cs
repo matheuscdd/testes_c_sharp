@@ -26,6 +26,12 @@ using Repository.Repositories.Portfolios;
 using Repository.Repositories.Stocks;
 using Repository.Repositories.Users;
 using Scalar.AspNetCore;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -149,6 +155,42 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
 );
 
+// Configuração signoz
+if (builder.Environment.EnvironmentName.Equals("Production"))
+{
+    var resourceBuilder = ResourceBuilder.CreateDefault().AddService("project-asp");
+    var protocol = OtlpExportProtocol.Grpc;
+    var signozUrl = new Uri("http://signoz-otel-collector:4317");
+
+    builder.Logging.ClearProviders();
+    builder.Logging.AddOpenTelemetry(options =>
+    {
+        options.IncludeScopes = true;
+        options
+            .SetResourceBuilder(resourceBuilder)
+            .AddOtlpExporter(otlpOptions =>
+            {
+                otlpOptions.Endpoint = signozUrl;
+                otlpOptions.Protocol = protocol;
+            });
+    });
+    builder.Services.AddOpenTelemetry()
+        .WithTracing(tracing => tracing
+            .SetResourceBuilder(resourceBuilder)
+            .AddAspNetCoreInstrumentation()
+            .AddOtlpExporter(otlpOptions =>
+            {
+                otlpOptions.Endpoint = signozUrl;
+                otlpOptions.Protocol = protocol;
+            }))
+        .WithMetrics(metrics => metrics
+            .AddAspNetCoreInstrumentation()
+            .AddOtlpExporter(otlpOptions =>
+            {
+                otlpOptions.Endpoint = signozUrl;
+                otlpOptions.Protocol = protocol;
+            }));
+}
 
 // Configuração do mapster
 var config = TypeAdapterConfig.GlobalSettings;
@@ -188,7 +230,6 @@ app.UseExceptionHandler(config =>
 {
     config.Run(async context => 
     {
-        // TODO depois testar com signoz
         var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
 
         context.Response.ContentType = "application/json";
@@ -203,7 +244,7 @@ app.UseExceptionHandler(config =>
                 Status = custom.StatusCode,
                 Extensions = { { "traceId", custom.TraceId } }
             };
-            logger.LogError(exception, "TraceId: {TraceId} -> Handle exception: {Message}", custom.TraceId, exception?.Message);
+            logger.LogError(exception, $"TraceId: {custom.TraceId} -> Handle exception: {exception?.Message}");
 
             await context.Response.WriteAsJsonAsync(problemDetails);
         }
@@ -218,7 +259,7 @@ app.UseExceptionHandler(config =>
                 Status = (int) HttpStatusCode.InternalServerError,
                 Extensions = { { "traceId", traceId } }
             };
-            logger.LogError(exception, "TraceId: {TraceId} -> Unhandled exception: {Message}", traceId, exception?.Message);
+            logger.LogError(exception, $"TraceId: {traceId} -> Unhandled exception: {exception?.Message}");
 
             await context.Response.WriteAsJsonAsync(problemDetails);
         }

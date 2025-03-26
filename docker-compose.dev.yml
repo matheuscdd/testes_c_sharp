@@ -1,4 +1,4 @@
-name: 'dev'
+name: 'proj-dev'
 services:
   migrator:
     build:
@@ -29,6 +29,10 @@ services:
         Host: '${Host}'
         SecretKey: '${SecretKey}'
         DefaultConnection: '${DefaultConnection}'
+    volumes:
+      - ./asp:/app
+      - /app/obj/
+      - /app/bin/
     networks:
       - net
     depends_on:

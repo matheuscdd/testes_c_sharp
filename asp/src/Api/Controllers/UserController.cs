@@ -15,10 +15,12 @@ namespace Api.Controllers;
 [Route("api/users")]
 public class UserController: ControllerBase
 {
+    private readonly ILogger<UserController> _logger;
     private readonly IMediator _mediator;
 
-    public UserController(IMediator mediator)
+    public UserController(ILogger<UserController> logger, IMediator mediator)
     {
+        _logger = logger;
         _mediator = mediator;
     }
 
@@ -43,6 +45,7 @@ public class UserController: ControllerBase
     )
     {
         var response = await _mediator.Send(createUserCommand);
+        _logger.LogInformation("User Created");
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
@@ -52,8 +55,10 @@ public class UserController: ControllerBase
         [FromBody] UpdateUserCommand updateUserCommand
     )
     {
-        updateUserCommand.Id = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        var id = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        updateUserCommand.Id = id;
         var response = await _mediator.Send(updateUserCommand);
+        _logger.LogInformation($"User {id} Updated - UserId: {id}");
         return Ok(response);
     }
 
@@ -63,6 +68,7 @@ public class UserController: ControllerBase
     {
         var id = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
         await _mediator.Send(new DeleteUserCommand(id));
+        _logger.LogInformation($"User {id} Deleted - UserId: {id}");
         return NoContent();
     }
 

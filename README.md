@@ -51,7 +51,7 @@ dotnet ef migrations add init
 dotnet ef database update
 
 ## Aplica migrações pelo docker
-docker exec -it prod-migrator-1 sh -c "./.tools/dotnet-ef database update --project src/Repository --startup-project src/Api"
+docker exec -it proj-prod-migrator-1 sh -c "./.tools/dotnet-ef database update --project src/Repository --startup-project src/Api"
 
 # SQL Server
 docker run \
