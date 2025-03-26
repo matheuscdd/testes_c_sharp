@@ -14,7 +14,7 @@ docker network connect signoz-network signoz-otel-collector
 docker network connect signoz-network proj-prod-asp-1
 
 ## Disponível
-http://localhost:8080/
+http://localhost:8000/
 
 # Instalação
 dotnet add package OpenTelemetry --version 1.11.2

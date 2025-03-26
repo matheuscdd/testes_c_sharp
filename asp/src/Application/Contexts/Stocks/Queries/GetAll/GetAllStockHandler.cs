@@ -17,7 +17,6 @@ public class GetAllStockHandler: IRequestHandler<GetAllStockQuery, IReadOnlyColl
         GetAllStockQuery request, CancellationToken cancellationToken
     )
     {
-        // TODO tentar usar mapsters
         var queryParams = new GetAllStockQueryParams(request.Symbol, request.CompanyName, request.SortBy, request.IsDescending, request.PageNumber, request.PageSize);
         var entities = await _stockRepository.GetAllAsync(queryParams, cancellationToken);
         var dtos = entities.Adapt<IReadOnlyCollection<StockDtoWithComments>>();

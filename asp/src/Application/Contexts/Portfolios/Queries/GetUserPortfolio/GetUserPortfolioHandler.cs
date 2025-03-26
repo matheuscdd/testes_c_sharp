@@ -19,7 +19,6 @@ public class GetUserPortfolioHandler: IRequestHandler<GetUserPortfolioQuery, IRe
         CancellationToken cancellationToken
     )
     {
-        // TODO - depois tentar fazer tratativa para ocultar comentários
         var entities = await _portfolioRepository.GetUserPortfolioAsync(request.UserId,  cancellationToken);
         var dtos = entities.Adapt<IReadOnlyCollection<StockDtoWithComments>>();
         return dtos;

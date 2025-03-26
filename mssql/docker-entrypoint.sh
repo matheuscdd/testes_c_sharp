@@ -13,6 +13,6 @@ BEGIN
 END;
 GO
 "
-echo "$MSSQL_SA_PASSWORD"
+
 sqlcmd=$(find / -name sqlcmd 2>/dev/null)
 "$sqlcmd" -S 'localhost,1433' -U sa -P "$MSSQL_SA_PASSWORD" -Q "$cmd" -C

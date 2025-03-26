@@ -24,11 +24,12 @@ services:
         DefaultConnection: '${DefaultConnection}'
     image: asp
     ports:
-      - '8080:8080'
+      - '8000:8000'
     environment:
         Host: '${Host}'
         SecretKey: '${SecretKey}'
         DefaultConnection: '${DefaultConnection}'
+        DEPLOY_URL: 'http://localhost:8000'
     volumes:
       - ./asp:/app
       - /app/obj/

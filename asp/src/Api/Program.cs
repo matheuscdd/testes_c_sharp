@@ -39,6 +39,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectString = Environment.GetEnvironmentVariable("DefaultConnection") ?? throw new Exception("Connection_String cannot be empty");
 var host = Environment.GetEnvironmentVariable("Host") ?? throw new Exception("Host cannot be empty");
 var secretKey = Environment.GetEnvironmentVariable("SecretKey") ?? throw new Exception("SecretKey cannot be empty");
+var deployUrl = Environment.GetEnvironmentVariable("DEPLOY_URL") ?? throw new Exception("DEPLOY_URL cannot be empty");
 
 builder.Configuration["JWT:Issuer"] = host;
 builder.Configuration["JWT:Audience"] = host;
@@ -160,7 +161,7 @@ if (builder.Environment.EnvironmentName.Equals("Production"))
 {
     var resourceBuilder = ResourceBuilder.CreateDefault().AddService("project-asp");
     var protocol = OtlpExportProtocol.Grpc;
-    var signozUrl = new Uri("http://signoz-otel-collector:4317");
+    var signozUrl = new Uri(Environment.GetEnvironmentVariable("SignozUrl")!);
 
     builder.Logging.ClearProviders();
     builder.Logging.AddOpenTelemetry(options =>
@@ -211,12 +212,17 @@ var app = builder.Build();
 // Registra os middlewares
 app.UseMiddleware<TokenValidationMiddleware>();
 
-// Insere o swagger em desenvolvimento
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Insere as configurações do swagger
+app.UseSwagger(options => {
+    options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+    {
+        swaggerDoc.Servers = new List<OpenApiServer>
+        {
+            new OpenApiServer { Url = deployUrl }
+        };
+    });
+});
+app.UseSwaggerUI();
 
 // Faz a conversão direta entre Classe pra Dto
 app.MapScalarApiReference();

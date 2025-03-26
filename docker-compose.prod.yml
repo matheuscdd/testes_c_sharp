@@ -27,6 +27,7 @@ services:
         Host: '${Host}'
         SecretKey: '${SecretKey}'
         DefaultConnection: '${DefaultConnection}'
+        DEPLOY_URL: '${DEPLOY_URL}'
         SignozUrl: 'http://signoz-otel-collector:4317'
     networks:
       - net
