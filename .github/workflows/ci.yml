@@ -19,6 +19,7 @@ jobs:
             DefaultConnection='Server=mssql,1433;Database=finshark;User Id=sa;Password=ch@ng3MeSo0nMan;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;'
             SecretKey='$(tr -dc A-Za-z0-9 </dev/urandom | head -c 128; echo)'
             Host='http://localhost:5246'
+            DEPLOY_URL='http://localhost'
             MSSQL_SA_PASSWORD='ch@ng3MeSo0nMan'
           "
           echo "$content" > .env

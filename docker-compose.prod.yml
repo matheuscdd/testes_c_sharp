@@ -52,9 +52,10 @@ services:
         context: ./nginx
         dockerfile: Dockerfile.dev
     image: nginx
+    # Precisa fazer isso para não entrar em conflito com as portas do nginx do signoz
     ports:
-        - '80:80'
-        - '443:443'
+        - '81:80' 
+        - '444:443'
     environment:
         DOMAIN: '${DOMAIN}'
         EMAIL_SUPPORT: '${EMAIL_SUPPORT}'
