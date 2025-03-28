@@ -5,7 +5,7 @@ using Domain.Entities;
 using Domain.Services;
 using Microsoft.IdentityModel.Tokens;
 
-namespace api.Services;
+namespace Api.Services;
 
 public class TokenService : ITokenService
 {
