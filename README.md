@@ -50,6 +50,9 @@ dotnet ef migrations add init
 ## Aplica as migrações
 dotnet ef database update
 
+## Aplica migrações pelo docker
+docker exec -it proj-prod-migrator-1 sh -c "./.tools/dotnet-ef database update --project src/Repository --startup-project src/Api"
+
 # SQL Server
 docker run \
    -e "ACCEPT_EULA=Y" \
@@ -68,3 +71,46 @@ find / -name sqlcmd 2>/dev/null
 
 # Passo a passo
 Cria model > Registra no DbContext > Cria Dto > Cria Map > Cria InterfaceRepo > Cria Repo > Adicionar no Program.cs > Cria Controller
+
+# Dos unix
+dos2unix script.sh
+
+# Docker
+## Rodar migrações dev
+docker compose -f docker-compose.dev.yml exec -T migrator dotnet tool restore
+docker compose -f docker-compose.dev.yml exec -T migrator dotnet ef database update
+
+## Rodar migrações prod
+docker compose -f docker-compose.prod.yml exec -T migrator dotnet tool restore
+docker compose -f docker-compose.prod.yml exec -T migrator dotnet ef database update
+
+# Criar Pasta com classes
+dotnet new classlib -n Application
+dotnet new classlib -n Domain
+dotnet new classlib -n Repository
+
+# Novo modelo onion
+## Criar migrações precisa estar na raiz do projeto (src)
+dotnet ef migrations add Init -o Migrations --project Repository --startup-project Api
+
+## Executa migrações na raiz (src)
+dotnet ef database update --project Repository --startup-project Api
+dotnet ef database update --project src/Repository --startup-project src/Api
+
+## Rodar (src)
+dotnet watch run --project Api
+
+## Build (src)
+dotnet build Api
+
+# Criando uma solução
+Soluções é nome do gerenciador de projetos, aqui as dependências são quebradas em arquivos de projeto, .sln é o tipo de arquivo que vai centralizar as conexões entre os arquivos de dependências. A partir disso da pra dar build direto na pasta
+```
+dotnet new sln -n SolutionName
+```
+
+# Adicionando projetos a uma solução
+```
+dotnet sln SolutionName.sln add path/file1.csproj
+dotnet sln SolutionName.sln add path/file2.csproj
+```

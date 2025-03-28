@@ -1,0 +1,74 @@
+name: 'proj-prod'
+services:
+  migrator:
+    build:
+      context: ./asp
+      dockerfile: Dockerfile.migrator
+    image: migrator
+    environment:
+      Host: '${Host}'
+      SecretKey: '${SecretKey}'
+      DefaultConnection: '${DefaultConnection}'
+    networks:
+      - net
+    depends_on:
+      - mssql
+      - asp
+  asp:
+    build: 
+      context: ./asp
+      dockerfile: Dockerfile.prod
+      args:
+        Host: '${Host}'
+        SecretKey: '${SecretKey}'
+        DefaultConnection: '${DefaultConnection}'
+    image: asp
+    environment:
+        Host: '${Host}'
+        SecretKey: '${SecretKey}'
+        DefaultConnection: '${DefaultConnection}'
+        DEPLOY_URL: '${DEPLOY_URL}'
+        SignozUrl: 'http://signoz-otel-collector:4317'
+    networks:
+      - net
+    depends_on:
+      - mssql
+  mssql:
+    build:
+      context: ./mssql
+      dockerfile: Dockerfile
+    image: mssql
+    environment:
+      ACCEPT_EULA: 'Y'
+      MSSQL_SA_PASSWORD: '${MSSQL_SA_PASSWORD}'
+      MSSQL_TLS_ENFORCE: 0
+    volumes:
+      - storage-mssql:/var/opt/mssql
+    networks:
+      - net
+  nginx:
+    restart: always
+    build:
+        context: ./nginx
+        dockerfile: Dockerfile.dev
+    image: nginx
+    # Precisa fazer isso para não entrar em conflito com as portas do nginx do signoz
+    ports:
+        - '81:80' 
+        - '444:443'
+    environment:
+        DOMAIN: '${DOMAIN}'
+        EMAIL_SUPPORT: '${EMAIL_SUPPORT}'
+        STAGING_URL: '${STAGING_URL}'
+    depends_on:
+        - mssql
+        - asp
+    networks:
+        - net
+
+networks:
+  net:
+    driver: bridge
+volumes:
+  storage-mssql:
+    driver: local

@@ -1,0 +1,580 @@
+type: collection.insomnia.rest/5.0
+name: Scratch Pad
+meta:
+  id: wrk_scratchpad
+  created: 1708292679993
+  modified: 1708292679993
+collection:
+  - name: stocks
+    meta:
+      id: fld_899b7d7bf5bd4ea2b9d3b1744f50dce6
+      created: 1742296763366
+      modified: 1742296763366
+      sortKey: -1742296763366
+    children:
+      - url: "{{ _.baseURL }}/api/stocks"
+        name: list
+        meta:
+          id: req_80328a9547e44fcf86448627f8c55b75
+          created: 1720222688130
+          modified: 1742586834594
+          isPrivate: false
+          sortKey: -1742296766854
+        method: GET
+        parameters:
+          - id: pair_d3689dac24974dc0927e2a83bdacd128
+            name: symbol
+            value: bv
+            disabled: true
+          - id: pair_6fcf2bf2109e40c08d9401c8d94d9188
+            name: isdescending
+            value: "true"
+            disabled: true
+          - id: pair_ce2c2e0181f94ca7a4489e9cf724d5b0
+            name: sortBy
+            value: symbol
+            disabled: true
+          - id: pair_0e116d051a7744d8ae902b8b548a0b9d
+            name: pageSize
+            value: "1"
+            disabled: true
+          - id: pair_7d7212a4788a4bf88a18495d6be49473
+            name: pageNumber
+            value: "2"
+            disabled: true
+        headers:
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/stocks/1"
+        name: find
+        meta:
+          id: req_82fe944bbd1a41d88065aa38681b10cf
+          created: 1742296754931
+          modified: 1743000919500
+          isPrivate: false
+          sortKey: -1742296766954
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/stocks"
+        name: create
+        meta:
+          id: req_8bbd72ea0e844f2b93501b0cf574f37e
+          created: 1742304249452
+          modified: 1742977562688
+          isPrivate: false
+          sortKey: -1742296766904
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"symbol": "{% faker 'randomHexColor' %}",
+            	"companyName": "{% faker 'randomLoremWord' %}sss",
+            	"purchase": 5,
+            	"lastDiv": 1,
+            	"industry": "Foods",
+            	"marketCap": 99
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/stocks/3"
+        name: update
+        meta:
+          id: req_468e8e6be3d943b2a57afabe9405ddd3
+          created: 1742309780677
+          modified: 1743000976376
+          isPrivate: false
+          sortKey: -1742296766879
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"symbol": "{% faker 'randomHexColor' %}",
+            	"companyName": "rollbs",
+            	"purchase": 666,
+            	"lastDiv": 1,
+            	"industry": "{% faker 'randomLoremWord' %}",
+            	"marketCap": {% faker 'timestamp' %}
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/10.3.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/stocks/"
+        name: del
+        meta:
+          id: req_eed68e9a31e74f099e636d19a37552d4
+          created: 1742310077698
+          modified: 1743000296455
+          isPrivate: false
+          sortKey: -1742296766929
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/10.3.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: comments
+    meta:
+      id: fld_a429ec1f8ddb4545a8fe4b3456d14a11
+      created: 1742329305511
+      modified: 1742329305511
+      sortKey: -1742329305511
+    children:
+      - url: "{{ _.baseURL }}/api/comments"
+        name: list
+        meta:
+          id: req_70d4388e5fa04261b21ce81adb0567e3
+          created: 1742324813946
+          modified: 1742586786856
+          isPrivate: false
+          sortKey: -1742329311286
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/comments/1"
+        name: find
+        meta:
+          id: req_d0163a05e56a467da591c324e8837172
+          created: 1742329627961
+          modified: 1743000522220
+          isPrivate: false
+          sortKey: -1742313039120
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/comments/1"
+        name: create
+        meta:
+          id: req_42f6ce3b9b0348babf0dbe8a98d6d070
+          created: 1742376224263
+          modified: 1742998057946
+          isPrivate: false
+          sortKey: -1742304903037
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"title": "{% faker 'randomLoremWord' %}",
+            	"content": "{% faker 'randomLoremWords' %}"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/comments/2"
+        name: update
+        meta:
+          id: req_d3905da28274453ea6013fa6fd88c6f4
+          created: 1742378732388
+          modified: 1743000901485
+          isPrivate: false
+          sortKey: -1742300834995.5
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"title": "{% faker 'randomLoremWord' %}",
+            	"content": "{% faker 'randomLoremWords' %}"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/comments/4"
+        name: del
+        meta:
+          id: req_a7be11c22cce4163b0f61178b8cd267d
+          created: 1742379142499
+          modified: 1743000704767
+          isPrivate: false
+          sortKey: -1742308971078.5
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: users
+    meta:
+      id: fld_7f346b6ff1f140e7b0bb69e663a70794
+      created: 1742404849467
+      modified: 1742404849467
+      sortKey: -1742404849467
+    children:
+      - url: "{{ _.baseURL }}/api/users"
+        name: create
+        meta:
+          id: req_fe67215df60a47909e4295c27425d634
+          created: 1742404861746
+          modified: 1743000859092
+          isPrivate: false
+          sortKey: -1742404865590
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"username": "bobert",
+            	"password": "aUbcdefghis1ajjR#das",
+            	"email": "{% faker 'randomEmail' %}"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/8.6.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/users/27c293b3-ba87-446e-98e5-f069a8ced7e3"
+        name: find
+        meta:
+          id: req_af86d986fbf64b74b82d00e2d12e4991
+          created: 1742415337931
+          modified: 1742977493188
+          isPrivate: false
+          sortKey: -1742367088438
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: true
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/users/"
+        name: list
+        meta:
+          id: req_24af3a2cd4e246a685ee555c7b5cdaf2
+          created: 1742415475047
+          modified: 1742866898645
+          isPrivate: false
+          sortKey: -1742348199862
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/users/login"
+        name: login
+        meta:
+          id: req_f064feea8dbd4b99a422a856d628c5b9
+          created: 1742421118759
+          modified: 1743000863987
+          isPrivate: false
+          sortKey: -1742385977014
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"username": "mob.clays2d",
+            	"password": "aUbcdefghis1ajjR#das"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/8.6.1
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/users"
+        name: update
+        meta:
+          id: req_ce85b634e6c14560b9a888264bad9aea
+          created: 1742815079205
+          modified: 1742894916016
+          isPrivate: false
+          sortKey: -1742395421302
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"username": "{% faker 'randomUserName' %}",
+            	"email": "{% faker 'randomEmail' %}"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/users"
+        name: del
+        meta:
+          id: req_4197de72d1724ffaabb141eabe6722dd
+          created: 1742825940443
+          modified: 1742895097448
+          isPrivate: false
+          sortKey: -1742357644150
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+          disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: portfolios
+    meta:
+      id: fld_f3afa572c37e46d7a5f23ffe275e3abc
+      created: 1742472685513
+      modified: 1742472685513
+      sortKey: -1742472685513
+    children:
+      - url: "{{ _.baseURL }}/api/portfolios"
+        name: list
+        meta:
+          id: req_877087e28b7e42c38defad08bf3aadd0
+          created: 1742476650711
+          modified: 1742999100268
+          isPrivate: false
+          sortKey: -1742476653075
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/portfolios/1"
+        name: create
+        meta:
+          id: req_cb0fc37b684c493eb121c3232205eae6
+          created: 1742493221770
+          modified: 1742999689576
+          isPrivate: false
+          sortKey: -1742440759332.5
+        method: POST
+        headers:
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseURL }}/api/portfolios/0"
+        name: delete
+        meta:
+          id: req_5341270d1f5f4932a37a8b77be0fd2af
+          created: 1742495387347
+          modified: 1742999625395
+          isPrivate: false
+          sortKey: -1742422812461.25
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/8.6.1
+        authentication:
+          type: bearer
+          token: "{{ _.token }}"
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1720222674810
+    modified: 1720222674810
+environments:
+  name: Base Environment
+  meta:
+    id: env_99d30891da4bdcebc63947a8fc17f076de878684
+    created: 1720222674806
+    modified: 1742814000682
+    isPrivate: false
+  data:
+    token: "{% response 'body', 'req_f064feea8dbd4b99a422a856d628c5b9',
+      'b64::JC50b2tlbg==::46b', 'never', 60 %}"
+    baseURL: http://localhost:5154
